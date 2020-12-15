@@ -1,11 +1,21 @@
 package com.example.aona2.studywithme
 
-class DummyData {
-    lateinit var user_id: String
-    lateinit var user_name: String
-    lateinit var user_icon: uri
-    lateinit var studing_task: String
-    lateinit var start_study_at:
+import android.net.Uri
+import java.time.LocalDateTime
 
-    constructor()
+class DummyData {
+//    lateinit var user_id: String
+//    lateinit var user_name: String
+//    lateinit var user_icon: Uri
+//    lateinit var studing_task: String
+//    lateinit var start_study_at: Long
+//
+//    constructor(){
+//        user_id = "testId"
+//        user_name = "testName"
+////        user_icon =
+//        studing_task = "実システム創造"
+//        start_study_at = System.currentTimeMillis()
+//
+//    }
 }
