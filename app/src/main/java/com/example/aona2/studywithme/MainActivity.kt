@@ -1,5 +1,6 @@
 package com.example.aona2.studywithme
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Password is: $password")
 
             //Firebase Authenticationにてユーザーを作成する
+
+            //HomeActivityへ遷移
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
         }
 
         //Login Activityは省略
