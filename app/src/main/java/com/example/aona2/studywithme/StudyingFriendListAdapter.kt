@@ -2,17 +2,19 @@ package com.example.aona2.studywithme
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.menu.ListMenuItemView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
-class StudyingFriendListAdapter internal constructor(context: Context)
+class StudyingFriendListAdapter internal constructor(context: Context, listener: Listener)
     : RecyclerView.Adapter<StudyingFriendListAdapter.StudyingFriendViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 //    private val friends = emptyList<Friend>()
+    private val clickListener: Listener = listener
 
     inner class StudyingFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val user_icon = itemView.user_icon
@@ -34,6 +36,9 @@ class StudyingFriendListAdapter internal constructor(context: Context)
             holder.task_status_icon.setImageResource(R.drawable.study_status)
             holder.remain_time.text = "残り15分"
             holder.task_name.text = "実システム創造　進捗作成"
+            holder.itemView.setOnClickListener {
+                clickListener.onItemClicked(holder.adapterPosition)
+            }
         }
         if(position == 1){
             holder.user_icon.setImageResource(R.drawable.member2)
@@ -41,6 +46,9 @@ class StudyingFriendListAdapter internal constructor(context: Context)
             holder.task_status_icon.setImageResource(R.drawable.breaktime_status)
             holder.remain_time.text = "残り2分"
             holder.task_name.text = ""
+            holder.itemView.setOnClickListener {
+                clickListener.onItemClicked(holder.adapterPosition)
+            }
         }
         if(position == 2){
             holder.user_icon.setImageResource(R.drawable.member3)
@@ -48,6 +56,9 @@ class StudyingFriendListAdapter internal constructor(context: Context)
             holder.task_status_icon.setImageResource(R.drawable.study_status)
             holder.remain_time.text  = "残り20分"
             holder.task_name.text = "関連研究探し"
+            holder.itemView.setOnClickListener {
+                clickListener.onItemClicked(holder.adapterPosition)
+            }
         }
     }
 
