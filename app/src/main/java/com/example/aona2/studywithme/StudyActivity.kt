@@ -10,32 +10,50 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 class StudyActivity : AppCompatActivity() {
-    lateinit var startRoomAt: LocalDateTime
+    private lateinit var startRoomAt: LocalDateTime
+    private lateinit var myCountDownTImer: MyCountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
         Log.d("StudyActivity", "onCreate")
 
+        //LocalDateTImeがオレオ以上でしか使えないので仕方なくバージョン確認
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ){
-            startRoomAt = LocalDateTime.of(2020, 12, 16, 15, 0,0, 0)
+            //テスト用にダミーのルーム開始時間を設定
+            startRoomAt = LocalDateTime.of(2020, 12, 29, 19, 0,0, 0)
             Log.d("StudyActivity", "start room at $startRoomAt")
         }
 
+        //タイマーに設定する残り時間を計算
         val remainTime = calcRemainTime()
-        MyCountDownTimer(remainTime * 1000, 1000, remain_time_textView)
+
+        //タイマーをセット、開始
+        myCountDownTImer = MyCountDownTimer(remainTime, 1000, remain_time_textView, remain_time_progressBar)
+        myCountDownTImer.start()
     }
 
+    //もっと簡素にできないか？
+    //MyCountDownTImerに移行すべき？
     private fun calcRemainTime() :Long {
-        var remainTime: Long = 0
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ) {
             val currentTime = LocalDateTime.now()
             Log.d("StudyActivity", "current time is $currentTime ")
-            val elapsedTime = Duration.between(startRoomAt, currentTime ).seconds
-            Log.d("StudyActivity", "elapsed time is $elapsedTime")
-            remainTime = ((30 * 60) - (elapsedTime % (30 * 60)))
-            Log.d("StudyActivity", "remain time is $remainTime")
+            val elapsedTimeMillis = Duration.between(startRoomAt, currentTime ).toMillis()
+            Log.d("StudyActivity", "elapsed time millis is $elapsedTimeMillis")
+            val remainTimeMillis = ((30 * 60 * 1000) - (elapsedTimeMillis % (30 * 60 * 1000)))
+            Log.d("StudyActivity", "remain time is $remainTimeMillis")
+            return remainTimeMillis
+        } else {
+            //バージョン確認がなくなったらここは削除する
+            val remainTimeMillis = 0
+            return remainTimeMillis.toLong()
         }
-        return remainTime
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //一応タイマーをキャンセルしておく
+        myCountDownTImer.cancel()
     }
 }
