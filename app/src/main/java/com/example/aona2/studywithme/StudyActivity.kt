@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_study.*
 import java.time.Duration
 import java.time.LocalDateTime
@@ -17,6 +18,10 @@ class StudyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
         Log.d("StudyActivity", "onCreate")
+
+        val adapter = InRoomFriendListAdapter(this)
+        in_room_friend_recyclerview.adapter = adapter
+        in_room_friend_recyclerview.layoutManager = LinearLayoutManager(this)
 
         //LocalDateTImeがオレオ以上でしか使えないので仕方なくバージョン確認
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ){
@@ -31,6 +36,8 @@ class StudyActivity : AppCompatActivity() {
         //タイマーをセット、開始
         myCountDownTImer = MyCountDownTimer(remainTime, 1000, remain_time_textView, remain_time_progressBar)
         myCountDownTImer.start()
+
+
     }
 
     //もっと簡素にできないか？
