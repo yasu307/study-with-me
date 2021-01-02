@@ -1,27 +1,41 @@
 package com.example.aona2.studywithme
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.media.SoundPool
 import android.os.CountDownTimer
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MyCountDownTimer(
         millisInFuture: Long,
         countDownInterval: Long,
+        private val isStudying : Boolean,
         private val timerText: TextView,
         private val timerProgressBar: ProgressBar,
         private val studyActivity: StudyActivity
     ) : CountDownTimer(millisInFuture, countDownInterval){
     //分秒表示のフォーマットを作成
     private val dateFormat = SimpleDateFormat("mm:ss", Locale.JAPAN)
+    private val study_max = 25 * 60 * 1000
+    private val breaktime_max = 5 * 60 * 1000
 
     init {
         //プログレスバーのマックスを指定 30分をミリ秒に変換したもの
-        timerProgressBar.max = 30 * 60 * 1000
+        //勉強中なら25分、休憩中なら5分を指定
+        if(isStudying){
+            timerProgressBar.max = study_max
+            studyActivity.constraintLayout_studyActivity.setBackgroundColor(ContextCompat.getColor(studyActivity, R.color.study))
+        }
+        else{
+            timerProgressBar.max = breaktime_max
+            studyActivity.constraintLayout_studyActivity.setBackgroundColor(ContextCompat.getColor(studyActivity, R.color.breakTime))
+        }
         //プログレスバー反転　表示が減っていくように
         timerProgressBar.rotation = 180F
     }
