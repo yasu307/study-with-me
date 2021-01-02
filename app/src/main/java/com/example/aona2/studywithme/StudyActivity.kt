@@ -58,9 +58,7 @@ class StudyActivity : AppCompatActivity() {
     }
 
     fun startTimer() {
-        if(myCountDownTimer != null){
-            myCountDownTimer.cancel()
-        }
+        myCountDownTimer.cancel()
 
         //タイマーに設定する残り時間を計算
         val remainTime = calcRemainTime()
