@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 class StudyActivity : AppCompatActivity() {
     private lateinit var startRoomAt: LocalDateTime
-    private lateinit var myCountDownTImer: MyCountDownTimer
+    private lateinit var myCountDownTimer: MyCountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class StudyActivity : AppCompatActivity() {
         //LocalDateTImeがオレオ以上でしか使えないので仕方なくバージョン確認
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ){
             //テスト用にダミーのルーム開始時間を設定
-            startRoomAt = LocalDateTime.of(2020, 12, 29, 19, 0,0, 0)
+            startRoomAt = LocalDateTime.of(2021, 1, 2, 15, 38,0, 0)
             Log.d("StudyActivity", "start room at $startRoomAt")
         }
 
@@ -34,9 +34,8 @@ class StudyActivity : AppCompatActivity() {
         val remainTime = calcRemainTime()
 
         //タイマーをセット、開始
-        myCountDownTImer = MyCountDownTimer(remainTime, 1000, remain_time_textView, remain_time_progressBar)
-        myCountDownTImer.start()
-
+        myCountDownTimer = MyCountDownTimer(remainTime, 1000, remain_time_textView, remain_time_progressBar, this)
+        myCountDownTimer.start()
 
     }
 
@@ -58,9 +57,22 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
+    fun startTimer() {
+        if(myCountDownTimer != null){
+            myCountDownTimer.cancel()
+        }
+
+        //タイマーに設定する残り時間を計算
+        val remainTime = calcRemainTime()
+
+        //タイマーをセット、開始
+        myCountDownTimer = MyCountDownTimer(remainTime, 1000, remain_time_textView, remain_time_progressBar, this)
+        myCountDownTimer.start()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         //一応タイマーをキャンセルしておく
-        myCountDownTImer.cancel()
+        myCountDownTimer.cancel()
     }
 }

@@ -1,5 +1,6 @@
 package com.example.aona2.studywithme
 
+import android.content.Context
 import android.graphics.Color
 import android.media.SoundPool
 import android.os.CountDownTimer
@@ -12,7 +13,8 @@ class MyCountDownTimer(
         millisInFuture: Long,
         countDownInterval: Long,
         private val timerText: TextView,
-        private val timerProgressBar: ProgressBar
+        private val timerProgressBar: ProgressBar,
+        private val studyActivity: StudyActivity
     ) : CountDownTimer(millisInFuture, countDownInterval){
     //分秒表示のフォーマットを作成
     private val dateFormat = SimpleDateFormat("mm:ss", Locale.JAPAN)
@@ -36,7 +38,7 @@ class MyCountDownTimer(
     }
 
     override fun onFinish() {
-        timerText.text = "Finish!!"
+        studyActivity.startTimer()
     }
 }
 
