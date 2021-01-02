@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ログインされているか判別
-//        ログインされていなかったらログインこの画面を表示する
+        //ログインされていなかったらログインこの画面を表示する
 
         register_button_register.setOnClickListener {
             val username = username_edittext_register.text.toString()
@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
             //Loginはそのままで大丈夫か？
             val password = password_edittext_register.text.toString()
 
-            Log.d("MainActivity", "Email is: " + email)
+            Log.d("MainActivity", "User name is: $username")
+            Log.d("MainActivity", "Email is: $email")
             Log.d("MainActivity", "Password is: $password")
 
             //Firebase Authenticationにてユーザーを作成する

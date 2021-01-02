@@ -9,10 +9,12 @@ import androidx.appcompat.view.menu.ListMenuItemView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
+//HomeActivityの勉強中の友達リストのアダプター
 class StudyingFriendListAdapter internal constructor(context: Context, listener: Listener)
     : RecyclerView.Adapter<StudyingFriendListAdapter.StudyingFriendViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
+    //実際のデータが作成できたら使用する
 //    private val friends = emptyList<Friend>()
     private val clickListener: Listener = listener
 
@@ -30,6 +32,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     }
 
     override fun onBindViewHolder(holder: StudyingFriendViewHolder, position: Int) {
+        //ダミーデータを手動入力
         if(position == 0){
             holder.user_icon.setImageResource(R.drawable.member1)
             holder.user_name.text = "ヨシダ"
@@ -64,6 +67,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     override fun getItemCount(): Int = 3
 
+    //itemがクリックされたか
     interface Listener{
         fun onItemClicked(index: Int)
     }

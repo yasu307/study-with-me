@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recyclerview_item_in_room.view.*
 
+//StudyActivityのルームにいる人リストのアダプター
 class InRoomFriendListAdapter internal constructor(context: Context)
     : RecyclerView.Adapter<InRoomFriendListAdapter.InRoomFriendViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
+    //実際のデータが作成できたら使用する
 //    private val friends = emptyList<Friend>()
 
     inner class InRoomFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -25,6 +27,7 @@ class InRoomFriendListAdapter internal constructor(context: Context)
     }
 
     override fun onBindViewHolder(holder: InRoomFriendViewHolder, position: Int) {
+        //ダミーデータを手動入力
         if (position == 0) {
             holder.user_icon.setImageResource(R.drawable.member1)
             holder.user_name.text = "ヨシダ"

@@ -22,12 +22,14 @@ class MyCountDownTimer(
     ) : CountDownTimer(millisInFuture, countDownInterval){
     //分秒表示のフォーマットを作成
     private val dateFormat = SimpleDateFormat("mm:ss", Locale.JAPAN)
+    //プログレスバーのmaxを変数にしておく
+    //勉強中なら25分、休憩中なら5分を指定
     private val study_max = 25 * 60 * 1000
     private val breaktime_max = 5 * 60 * 1000
 
     init {
         //プログレスバーのマックスを指定 30分をミリ秒に変換したもの
-        //勉強中なら25分、休憩中なら5分を指定
+        //constraintLayoutの背景色をモードによって変更
         if(isStudying){
             timerProgressBar.max = study_max
             studyActivity.constraintLayout_studyActivity.setBackgroundColor(ContextCompat.getColor(studyActivity, R.color.study))
@@ -52,6 +54,7 @@ class MyCountDownTimer(
     }
 
     override fun onFinish() {
+        //次のタイマーをスタート
         studyActivity.startTimer()
     }
 }

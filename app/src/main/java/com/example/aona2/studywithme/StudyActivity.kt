@@ -17,8 +17,10 @@ class StudyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
+
         Log.d("StudyActivity", "onCreate")
 
+        //recyclerviewの設定
         val adapter = InRoomFriendListAdapter(this)
         in_room_friend_recyclerview.adapter = adapter
         in_room_friend_recyclerview.layoutManager = LinearLayoutManager(this)
@@ -33,27 +35,35 @@ class StudyActivity : AppCompatActivity() {
         startTimer()
     }
 
+    //現在実行中のモードの残り時間を計算　返り値　Pair<残り時間（ミリ秒）,勉強中か？>
     //もっと簡素にできないか？
     //MyCountDownTImerに移行すべき？
     private fun calcRemainTime() : Pair<Long, Boolean>{
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ) {
+            //現在の時間
             val currentTime = LocalDateTime.now()
             Log.d("StudyActivity", "current time is $currentTime ")
+            //経過時間
             val elapsedTimeMillis = Duration.between(startRoomAt, currentTime ).toMillis()
             Log.d("StudyActivity", "elapsed time millis is $elapsedTimeMillis")
+            //残り時間
             val remainTimeMillis = ((30 * 60 * 1000) - (elapsedTimeMillis % (30 * 60 * 1000)))
             Log.d("StudyActivity", "remain time is $remainTimeMillis")
 
+            //残り時間が5分以上なら勉強中、そうでないなら休憩中
             if(remainTimeMillis >= 5 * 60 * 1000) return Pair(remainTimeMillis - 5 * 60 * 1000, true)
             else return Pair(remainTimeMillis, false)
         } else {
             //バージョン確認がなくなったらここは削除する
+            //適当な値を返す
             val remainTimeMillis = 0
             return Pair(remainTimeMillis.toLong(), true)
         }
     }
 
+    //タイマーの起動
     fun startTimer() {
+        //最初のタイマー起動の場合はキャンセルしない
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
 
         //タイマーに設定する残り時間を計算
