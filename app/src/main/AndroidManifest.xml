@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyWithMe">
-        <activity android:name=".StudyActivity"></activity>
-        <activity android:name=".TaskNameInputActivity"
-                  android:noHistory="true"/>
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".StudyActivity" />
+        <activity
+            android:name=".TaskNameInputActivity"
+            android:noHistory="true" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

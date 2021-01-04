@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         register_button_register.setOnClickListener {
             val username = username_edittext_register.text.toString()
             val email = email_edittext_register.text.toString()
-            //Loginはそのままで大丈夫か？
             val password = password_edittext_register.text.toString()
 
             Log.d("MainActivity", "User name is: $username")
@@ -26,12 +25,16 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Password is: $password")
 
             //Firebase Authenticationにてユーザーを作成する
+            
 
             //HomeActivityへ遷移
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
 
-        //Login Activityは省略
+        already_have_account_textView.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
