@@ -35,8 +35,9 @@ class LoginActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser != null){
             Log.d("Login","user is already login")
-            //HomeActivityへ遷移する
-
+//            //HomeActivityへ遷移する
+//            val intent = Intent(this, HomeActivity::class.java)
+//            startActivity(intent)
         }
     }
 
@@ -61,6 +62,10 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("Login", "ログイン成功")
                     val user = auth.currentUser
                     Log.d("Login","uid is: ${user?.uid}")
+
+                    //HomeActivityへ遷移
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
                 } else {
                     // サインイン失敗
                     Log.w("Login", "ログイン失敗", task.exception)
@@ -68,9 +73,5 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT).show()
                 }
             }
-
-//        //HomeActivityへ遷移
-//        val intent = Intent(this, HomeActivity::class.java)
-//        startActivity(intent)
     }
 }
