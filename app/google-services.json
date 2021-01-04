@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "366556330833",
+    "project_id": "studywithme-f7e43",
+    "storage_bucket": "studywithme-f7e43.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366556330833:android:20b82aa6fa0b05785bf170",
+        "android_client_info": {
+          "package_name": "com.example.aona2.studywithme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366556330833-9374jh7lipbmhtj0p6aib85an374kgds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAAgAC482HjHiHmWT4ZwJ13luOD6G6s-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366556330833-9374jh7lipbmhtj0p6aib85an374kgds.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
