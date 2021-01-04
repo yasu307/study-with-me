@@ -8,4 +8,5 @@
     <string name="already_have_account">アカウントを持っていますか？</string>
     <string name="register">登録</string>
     <string name="login">ログイン</string>
+    <string name="select_photo_button_string">アイコンを選択</string>
 </resources>
