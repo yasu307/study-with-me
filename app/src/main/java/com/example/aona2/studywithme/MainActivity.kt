@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var photoUri: Uri? = null
 
     companion object {
+        //デバッグ時のコメント用
         val TAG = "MainActivity"
     }
 
@@ -59,10 +61,12 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == pickPhotoRequestCode && resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "photo was selected")
             data?.data?.let {
+                //uploadImageToFirebase()にて使用するため変数に代入しておく
                 photoUri = it
+                //選択した写真をViewに表示
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
                 select_photo_imageView_register.setImageBitmap(bitmap)
-
+                //写真選択ボタンを透明に
                 select_photo_button_register.alpha = 0.0f
             }
         }
@@ -70,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // ログインしているかチェック
+        // Activityスタート時にログインしているかチェック
         val currentUser = auth.currentUser
         if(currentUser != null){
             Log.d(TAG,"user is already login")
@@ -82,12 +86,11 @@ class MainActivity : AppCompatActivity() {
       }
     }
 
+    //FirebaseAuthにてユーザーを作成する
     private fun performRegister(){
-        val username = username_edittext_register.text.toString()
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
 
-        Log.d(TAG, "User name is: $username")
         Log.d(TAG, "Email is: $email")
         Log.d(TAG, "Password is: $password")
 
@@ -101,53 +104,60 @@ class MainActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // サインイン成功
                     Log.d(TAG, "ユーザー作成成功")
-                    val user = auth.currentUser
-                    Log.d(TAG, "uid is ${user?.uid}")
-
+                    //成功したら次のステップ（アイコンの保存）へ
                     uploadImageToFirebase()
                 } else {
                     // サインイン失敗
                     Log.w(TAG, "ユーザー作成失敗", task.exception)
-                    Toast.makeText(baseContext, "ユーザー作成失敗",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "ユーザー作成失敗", Toast.LENGTH_SHORT).show()
                 }
             }
-
-
     }
 
+    //ユーザーアイコンをFirebaseStorageに保存
     private fun uploadImageToFirebase(){
-        val storage = Firebase.storage
-        val storageRef = storage.reference
-
         //ユニークなファイル名を作成
         val filename = UUID.randomUUID().toString()
 
+        val storageRef = Firebase.storage.reference
         val uploadImageRef = storageRef.child(filename)
         if(photoUri == null) return
         uploadImageRef.putFile(photoUri!!)
                 .addOnSuccessListener {
                     Log.d(TAG, "Image upload is success: ${it.metadata?.path}")
-                    //ユーザー情報をデータベースに保存する
                     //アップロードしたファイルをダウンロードするUriを渡す
                     uploadImageRef.downloadUrl.addOnSuccessListener {
                         Log.d(TAG,"Image download uri is: ${it.toString()}")
+                        //成功したら次のステップ（ユーザー情報の保存）へ
                         saveUserInfoToFirebase(it.toString())
                     }
                 }
                 .addOnFailureListener{
                     Log.d(TAG, "Image upload is failure")
+                    Toast.makeText(baseContext, "画像アップロード失敗", Toast.LENGTH_SHORT).show()
                 }
     }
 
-    private fun saveUserInfoToFirebase(imageUriToString: String){
+    //ユーザー情報をFirebaseに保存
+    private fun saveUserInfoToFirebase(userImageView: String){
+        val uid = auth.currentUser?.uid
 
+        val database = Firebase.database
+        val ref = database.getReference("users/$uid")
 
-//            //HomeActivityへ遷移する
-//            val intent = Intent(this, HomeActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            startActivity(intent)
+        val user = User(uid?:"", username_edittext_register.text.toString(), userImageView)
+        ref.setValue(user)
+                .addOnSuccessListener {
+                    Log.d(TAG, "save user to Firebase is success")
+                    //成功したらHomeActivityへ遷移する
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+                .addOnFailureListener {
+                    Log.d(TAG, "save user to Firebase is failure")
+                    Toast.makeText(baseContext, "ユーザー保存失敗", Toast.LENGTH_SHORT).show()
+                }
     }
 }
