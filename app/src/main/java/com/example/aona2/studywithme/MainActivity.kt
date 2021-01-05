@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -62,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             data?.data?.let {
                 photoUri = it
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
-                select_phot_imageView_register.setImageBitmap(bitmap)
+                select_photo_imageView_register.setImageBitmap(bitmap)
 
                 select_photo_button_register.alpha = 0.0f
             }
@@ -113,9 +112,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-//        //HomeActivityへ遷移
-//        val intent = Intent(this, HomeActivity::class.java)
-//        startActivity(intent)
+
     }
 
     private fun uploadImageToFirebase(){
@@ -144,5 +141,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveUserInfoToFirebase(imageUriToString: String){
 
+
+        //        //HomeActivityへ遷移
+//        val intent = Intent(this, HomeActivity::class.java)
+//        startActivity(intent)//        //HomeActivityへ遷移
+////        val intent = Intent(this, HomeActivity::class.java)
+////        startActivity(intent)
     }
 }
