@@ -74,7 +74,10 @@ class MainActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         if(currentUser != null){
             Log.d(TAG,"user is already login")
-            //HomeActivityへ遷移する
+            ////HomeActivityへ遷移する
+//            val intent = Intent(this, HomeActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(intent)
 
       }
     }
@@ -142,10 +145,9 @@ class MainActivity : AppCompatActivity() {
     private fun saveUserInfoToFirebase(imageUriToString: String){
 
 
-        //        //HomeActivityへ遷移
-//        val intent = Intent(this, HomeActivity::class.java)
-//        startActivity(intent)//        //HomeActivityへ遷移
-////        val intent = Intent(this, HomeActivity::class.java)
-////        startActivity(intent)
+//            //HomeActivityへ遷移する
+//            val intent = Intent(this, HomeActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(intent)
     }
 }

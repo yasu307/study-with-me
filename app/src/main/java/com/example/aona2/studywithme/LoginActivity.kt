@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
             Log.d("Login","user is already login")
 //            //HomeActivityへ遷移する
 //            val intent = Intent(this, HomeActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //            startActivity(intent)
         }
     }
@@ -65,6 +66,7 @@ class LoginActivity : AppCompatActivity() {
 
                     //HomeActivityへ遷移
                     val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 } else {
                     // サインイン失敗
