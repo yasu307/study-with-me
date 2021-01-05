@@ -72,23 +72,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        // Activityスタート時にログインしているかチェック
-        val currentUser = auth.currentUser
-        if(currentUser != null){
-            Log.d(TAG,"user is already login")
-            ////HomeActivityへ遷移する
-//            val intent = Intent(this, HomeActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            startActivity(intent)
-            return
-        }
-        Log.d(TAG, "user is not login")
-    }
-
     //FirebaseAuthにてユーザーを作成する
     private fun performRegister(){
+        val userName = username_edittext_register.text.toString()
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
 
@@ -96,8 +82,9 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "Password is: $password")
 
         //emailとpasswordが空だと、ユーザー作成で落ちるので事前に判別
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter text in email/password", Toast.LENGTH_SHORT).show()
+        //ついでにUsernameとアイコンもチェック
+        if (email.isEmpty() || password.isEmpty() || userName.isEmpty() || photoUri == null) {
+            Toast.makeText(this, "入力内容を埋めてください", Toast.LENGTH_SHORT).show()
             return
         }
 

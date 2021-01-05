@@ -29,21 +29,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        // ログインしているかチェック
-        val currentUser = auth.currentUser
-        if(currentUser != null){
-            Log.d("Login","user is already login")
-//            //HomeActivityへ遷移する
-//            val intent = Intent(this, HomeActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            startActivity(intent)
-            return
-        }
-        Log.d("Login", "user is not login")
-    }
-
     private fun performLogin(){
         val email = email_edittext_login_activity.text.toString()
         val password = password_edittext__login_activity.text.toString()
