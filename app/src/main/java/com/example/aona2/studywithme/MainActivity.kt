@@ -82,8 +82,9 @@ class MainActivity : AppCompatActivity() {
 //            val intent = Intent(this, HomeActivity::class.java)
 //            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //            startActivity(intent)
-
-      }
+            return
+        }
+        Log.d(TAG, "user is not login")
     }
 
     //FirebaseAuthにてユーザーを作成する
