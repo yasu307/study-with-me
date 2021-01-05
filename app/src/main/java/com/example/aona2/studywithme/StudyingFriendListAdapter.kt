@@ -37,7 +37,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
             holder.user_icon.setImageResource(R.drawable.member1)
             holder.user_name.text = "ヨシダ"
             holder.task_status_icon.setImageResource(R.drawable.study_status)
-            holder.remain_time.text = "残り15分"
+            holder.remain_time.text = "15分"
             holder.task_name.text = "実システム創造　進捗作成"
             holder.itemView.setOnClickListener {
                 clickListener.onItemClicked(holder.adapterPosition)
@@ -47,7 +47,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
             holder.user_icon.setImageResource(R.drawable.member2)
             holder.user_name.text = "フクダ"
             holder.task_status_icon.setImageResource(R.drawable.breaktime_status)
-            holder.remain_time.text = "残り2分"
+            holder.remain_time.text = "2分"
             holder.task_name.text = ""
             holder.itemView.setOnClickListener {
                 clickListener.onItemClicked(holder.adapterPosition)
@@ -57,7 +57,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
             holder.user_icon.setImageResource(R.drawable.member3)
             holder.user_name.text = "ヤマダ"
             holder.task_status_icon.setImageResource(R.drawable.study_status)
-            holder.remain_time.text  = "残り20分"
+            holder.remain_time.text  = "20分"
             holder.task_name.text = "関連研究探し"
             holder.itemView.setOnClickListener {
                 clickListener.onItemClicked(holder.adapterPosition)

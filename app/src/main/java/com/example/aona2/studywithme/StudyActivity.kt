@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_study.*
 import java.time.Duration
@@ -24,6 +25,9 @@ class StudyActivity : AppCompatActivity() {
         val adapter = InRoomFriendListAdapter(this)
         in_room_friend_recyclerview.adapter = adapter
         in_room_friend_recyclerview.layoutManager = LinearLayoutManager(this)
+        //recyclerViewに枠線をつける
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        in_room_friend_recyclerview.addItemDecoration(itemDecoration)
 
         //LocalDateTImeがオレオ以上でしか使えないので仕方なくバージョン確認
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ){

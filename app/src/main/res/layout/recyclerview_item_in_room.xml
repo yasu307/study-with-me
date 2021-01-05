@@ -11,6 +11,8 @@
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -26,20 +28,22 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/user_icon_in_room"
         app:layout_constraintStart_toEndOf="@+id/user_icon_in_room"
-        app:layout_constraintTop_toTopOf="@+id/user_icon_in_room" />
+        app:layout_constraintTop_toTopOf="@+id/user_icon_in_room"
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <TextView
         android:id="@+id/task_name_in_room"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text=""
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/user_icon_in_room"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/user_icon_in_room"
-        app:layout_constraintTop_toBottomOf="@+id/user_icon_in_room" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/user_name_in_room"
+        app:layout_constraintTop_toTopOf="@+id/user_icon_in_room"
+        app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
