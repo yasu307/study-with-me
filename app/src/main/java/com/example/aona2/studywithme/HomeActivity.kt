@@ -20,6 +20,8 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
+    //betu PC kara test
+
     private lateinit var auth: FirebaseAuth
 
     private lateinit var adapter: StudyingFriendListAdapter
