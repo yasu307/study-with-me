@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -52,6 +53,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     private fun startStudyAlone(){
+        val ref = Firebase.database.getReference("rooms").push()
 
     }
 
