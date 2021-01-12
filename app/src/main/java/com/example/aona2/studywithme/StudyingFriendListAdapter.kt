@@ -25,6 +25,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
+    private var users = mutableListOf<User>()
 
     private val clickListener: Listener = listener
 
@@ -43,8 +44,16 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     override fun onBindViewHolder(holder: StudyingFriendViewHolder, position: Int) {
         val currentStudyInfo = currentStudyInfos[position]
-//        Picasso.get().load(user.userImageView).into(holder.userIcon)
-//        holder.userName.text = user.userName
+        holder.taskName.text = currentStudyInfo.taskName
+
+        var user: User? = null
+        users.forEach {
+            if(it.uid == currentStudyInfo.uid) user = it
+        }
+        if(user == null) return
+
+        Picasso.get().load(user!!.userImageView).into(holder.userIcon)
+        holder.userName.text = user!!.userName
 
         holder.itemView.setOnClickListener {
             clickListener.onItemClicked(holder.adapterPosition, currentStudyInfo)
@@ -54,6 +63,12 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
         this.currentStudyInfos = currentStudyInfos
         Log.d("studying friend list adapter", currentStudyInfos.size.toString())
+        notifyDataSetChanged()
+    }
+
+    internal fun setUsers(users: MutableList<User>){
+        this.users = users
+        Log.d("studying friend list adapter", users.size.toString())
         notifyDataSetChanged()
     }
 

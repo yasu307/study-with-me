@@ -43,6 +43,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         recyclerView.addItemDecoration(itemDecoration)
 
         fetchCurrentStudyInfos()
+        fetchUsers()
 
         //fabの設定
         start_study_alone_fab_homeActivity.setOnClickListener {
@@ -103,6 +104,27 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                     }
                 }
                 adapter.setCurrentStudyInfos(currentStudyInfos)
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun fetchUsers(){
+        val users = mutableListOf<User>()
+        val usersRef = FirebaseDatabase.getInstance().getReference("/users")
+        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach {
+                    val user = it.getValue(User::class.java)
+                    Log.d("HomeActivity",user?.userName?:"")
+                    if(user != null) users.add(user)
+                    users.forEach {
+                        Log.d("mutable list of user", it.userName.toString())
+                    }
+                }
+                adapter.setUsers(users)
             }
             override fun onCancelled(error: DatabaseError) {
 
