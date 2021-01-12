@@ -42,7 +42,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         recyclerView.addItemDecoration(itemDecoration)
 
-        fetchUsers()
+        fetchCurrentStudyInfos()
 
         //fabの設定
         start_study_alone_fab_homeActivity.setOnClickListener {
@@ -71,10 +71,10 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     //recyclerViewのアイテムがクリックされた場合呼び出される
     //クリックされたアイテムのユーザー情報を引数にとる
-    override fun onItemClicked(index: Int, uid: String) {
+    override fun onItemClicked(index: Int, currentStudyInfo: CurrentStudyInfo) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
         //intent先にユーザー情報を送る
-        intent.putExtra("USER_UID", uid)
+        intent.putExtra("STUDY_INFO", currentStudyInfo)
         startActivity(intent)
     }
 
@@ -90,20 +90,19 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         }
     }
 
-    private fun fetchUsers(){
-        val users = mutableListOf<User>()
-        val usersRef = FirebaseDatabase.getInstance().getReference("/users")
-        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun fetchCurrentStudyInfos(){
+        val currentStudyInfos = mutableListOf<CurrentStudyInfo>()
+        val currentStudyInfosRef = FirebaseDatabase.getInstance().getReference("/CurrentStudyInfos")
+        currentStudyInfosRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
-                    val user = it.getValue(User::class.java)
-                    Log.d("HomeActivity",user?.userName?:"")
-                    if(user != null) users.add(user)
-                    users.forEach {
-                        Log.d("mutable list of user", it.userName.toString())
+                    val currentStudyInfo = it.getValue(CurrentStudyInfo::class.java)
+                    if(currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
+                    currentStudyInfos.forEach {
+                        Log.d("mutable list of current study infos", it.uid.toString())
                     }
                 }
-                adapter.setUsers(users)
+                adapter.setCurrentStudyInfos(currentStudyInfos)
             }
             override fun onCancelled(error: DatabaseError) {
 

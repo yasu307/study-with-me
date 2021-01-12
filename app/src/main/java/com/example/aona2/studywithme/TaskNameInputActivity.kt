@@ -5,89 +5,108 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_task_name_input.*
 import java.util.*
 
 class TaskNameInputActivity : AppCompatActivity() {
-    private var friendStudyTogether: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_name_input)
 
-        val uidStudyTogether = intent.getStringExtra("USER_UID")
-        Log.d("TaskNameInputActivity", "user id is $uidStudyTogether")
+        val friendCurrentStudyInfo = intent.getParcelableExtra<CurrentStudyInfo>("STUDY_INFO")
+        Log.d("TaskNameInputActivity", "uid study together is ${friendCurrentStudyInfo?.uid}")
 
         start_task_button.setOnClickListener {
-            if(friendStudyTogether == null){
+            if(friendCurrentStudyInfo == null){
                 Log.d("TaskNameInputActivity", "start study alone")
                 makeRoom()
             }else{
                 Log.d("TaskNameInputActivity", "start study with friend")
-//                saveUserToRoom(ref)
-            }
 
-            val intent = Intent(this, StudyActivity::class.java)
-            startActivity(intent)
+                fetchFriendRoom(friendCurrentStudyInfo)
+            }
         }
     }
 
+    private fun fetchFriendRoom(friendCurrentStudyInfo: CurrentStudyInfo){
+        val roomId = friendCurrentStudyInfo.roomId
+        val roomRef = Firebase.database.getReference("/rooms/$roomId/")
+
+        roomRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("TaskNameInputActivity", "fetch friend room is success")
+                val room = snapshot.getValue(Room::class.java)
+                if(room == null) return
+                saveUserToRoom(room)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("TaskNameInputActivity", "fetch friend room is failure")
+            }
+        })
+    }
+
     private fun makeRoom(){
-        val ref = Firebase.database.getReference("rooms").push()
-        if(ref.key == null) return
+        val roomRef = Firebase.database.getReference("rooms").push()
+        if(roomRef.key == null) return
         val nowMillis = Calendar.getInstance().timeInMillis
-        val room = Room(ref.key!!, nowMillis)
-        ref.setValue(room)
+        val room = Room(roomRef.key!!, nowMillis)
+        roomRef.setValue(room)
                 .addOnSuccessListener {
                     Log.d("HomeActivity", "save room to Firebase is success")
 
 //                    //ダミーのroomId
-//                    val ref = Firebase.database.getReference("rooms/-MQpGYwCbZVzKgawu6OD")
+//                    val roomRef = Firebase.database.getReference("rooms/-MQpGYwCbZVzKgawu6OD")
 
-                    saveUserToRoom(ref)
+                    saveUserToRoom(room)
                 }
                 .addOnFailureListener {
                     Log.d("HomeActivity", "save room to Firebase is failure")
                 }
     }
 
-    private fun saveUserToRoom(ref: DatabaseReference){
+    private fun saveUserToRoom(room: Room){
         val uid = Firebase.auth.currentUser?.uid
-        ref.child("in_room_users").child(uid.toString()).setValue(uid)
+        val roomRef = Firebase.database.getReference("rooms/${room.roomId}")
+        roomRef.child("in_room_users").child(uid.toString()).setValue(uid)
                 .addOnSuccessListener {
                     Log.d("HomeActivity", "save user to room in Firebase is success")
+
+                    saveCurrentStudyInfoToFirebase(room)
                 }
                 .addOnFailureListener {
                     Log.d("HomeActivity", "save user to room in Firebase is failure")
                 }
     }
 
-    private fun startStudyWithFriend(){
-
-    }
-
-    private fun saveStudyInfoToFirebase(){
+    private fun saveCurrentStudyInfoToFirebase(room: Room){
         val uid = Firebase.auth.currentUser?.uid
         if(uid == null) return
 
-        val ref = Firebase.database.getReference("StudyInfos/$uid").push()
-        if(ref.key == null) return
+        val currentStudyInfoRef = Firebase.database.getReference("CurrentStudyInfos/$uid")
 
-        val nowMillis = Calendar.getInstance().timeInMillis
+        val startStudyAt = Calendar.getInstance().timeInMillis
         val taskName = task_name_edit_text.text.toString()
 
-        val studyInfo = StudyInfo(ref.key!!, uid, taskName, nowMillis, -1)
+        val currentStudyInfo = CurrentStudyInfo(uid, room.roomId, taskName, room.roomStartAt, startStudyAt)
 
-        ref.setValue(studyInfo)
+        currentStudyInfoRef.setValue(currentStudyInfo)
                 .addOnSuccessListener {
                     Log.d("TaskNameInputActivity", "save studyInfo to Firebase is success")
+                    moveToRoom(room.roomId)
                 }
                 .addOnFailureListener {
                     Log.d("TaskNameInputActivity", "save studyInfo to Firebase is failure")
                 }
+    }
 
+
+    private fun moveToRoom(roomId: String){
+        val intent = Intent(this, StudyActivity::class.java)
+        intent.putExtra("ROOM_ID", roomId)
+        startActivity(intent)
     }
 }

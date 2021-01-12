@@ -27,6 +27,8 @@ class StudyActivity : AppCompatActivity() {
         setContentView(R.layout.activity_study)
 
         Log.d("StudyActivity", "onCreate")
+        val roomId = intent.getStringExtra("ROOM_ID")
+        Log.d("StudyActivity", "room id is $roomId")
 
         //recyclerviewの設定
         val adapter = InRoomFriendListAdapter(this)

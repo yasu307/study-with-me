@@ -24,7 +24,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    private var users = mutableListOf<User>()
+    private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
 
     private val clickListener: Listener = listener
 
@@ -73,14 +73,15 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 //                clickListener.onItemClicked(holder.adapterPosition)
 //            }
 //        }
-        val user = users[position]
-        Picasso.get().load(user.userImageView).into(holder.userIcon)
-        holder.userName.text = user.userName
+        val currentStudyInfo = currentStudyInfos[position]
+//        Picasso.get().load(user.userImageView).into(holder.userIcon)
+//        holder.userName.text = user.userName
+
 //        holder.taskStatusIcon.setImageResource(R.drawable.study_status)
 //        holder.remainTime.text = "20分"
 //        holder.taskName.text = "関連研究探し"
         holder.itemView.setOnClickListener {
-            clickListener.onItemClicked(holder.adapterPosition, user.uid)
+            clickListener.onItemClicked(holder.adapterPosition, currentStudyInfo)
         }
 
 
@@ -96,16 +97,16 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 //        }
     }
 
-    internal fun setUsers(users: MutableList<User>){
-        this.users = users
-        Log.d("studying friend list adapter", users.size.toString())
+    internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
+        this.currentStudyInfos = currentStudyInfos
+        Log.d("studying friend list adapter", currentStudyInfos.size.toString())
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = users.size
+    override fun getItemCount() = currentStudyInfos.size
 
     //itemがクリックされたか監視
     interface Listener{
-        fun onItemClicked(index: Int, uid: String)
+        fun onItemClicked(index: Int, currentStudyInfo: CurrentStudyInfo)
     }
 }
