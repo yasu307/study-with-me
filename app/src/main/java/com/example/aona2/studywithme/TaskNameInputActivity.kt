@@ -58,9 +58,6 @@ class TaskNameInputActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Log.d("HomeActivity", "save room to Firebase is success")
 
-//                    //ダミーのroomId
-//                    val roomRef = Firebase.database.getReference("rooms/-MQpGYwCbZVzKgawu6OD")
-
                     saveUserToRoom(room)
                 }
                 .addOnFailureListener {
