@@ -43,9 +43,14 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
         //fabの設定
         start_study_alone_fab_homeActivity.setOnClickListener {
+            startStudyAlone()
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun startStudyAlone(){
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
