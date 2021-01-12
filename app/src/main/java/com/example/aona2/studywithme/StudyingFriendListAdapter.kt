@@ -80,18 +80,20 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 //        holder.remainTime.text = "20分"
 //        holder.taskName.text = "関連研究探し"
         holder.itemView.setOnClickListener {
-            clickListener.onItemClicked(holder.adapterPosition)
+            clickListener.onItemClicked(holder.adapterPosition, user)
         }
-        if(position == 0){
-            holder.taskStatusIcon.setImageResource(R.drawable.study_status)
-            holder.remainTime.text  = "20分"
-            holder.taskName.text = "関連研究探し"
-        }
-        if(position == 1){
-            holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
-            holder.remainTime.text = "2分"
-            holder.taskName.text = "実システム創造　進捗作成"
-        }
+
+
+//        if(position == 0){
+//            holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+//            holder.remainTime.text  = "20分"
+//            holder.taskName.text = "関連研究探し"
+//        }
+//        if(position == 1){
+//            holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
+//            holder.remainTime.text = "2分"
+//            holder.taskName.text = "実システム創造　進捗作成"
+//        }
     }
 
     internal fun setUsers(users: MutableList<User>){
@@ -104,6 +106,6 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     //itemがクリックされたか監視
     interface Listener{
-        fun onItemClicked(index: Int)
+        fun onItemClicked(index: Int, user: User)
     }
 }

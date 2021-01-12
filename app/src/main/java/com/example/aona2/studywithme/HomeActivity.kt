@@ -46,37 +46,11 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
         //fabの設定
         start_study_alone_fab_homeActivity.setOnClickListener {
-            startStudyAlone()
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
     }
 
-    private fun startStudyAlone(){
-        val ref = Firebase.database.getReference("rooms").push()
-        if(ref.key == null) return
-        val nowMillis = Calendar.getInstance().timeInMillis
-        val room = Room(ref.key!!, nowMillis)
-        ref.setValue(room)
-                .addOnSuccessListener {
-                    Log.d("HomeActivity", "save room to Firebase is success")
-                }
-                .addOnFailureListener {
-                    Log.d("HomeActivity", "save room to Firebase is failure")
-                }
-
-//        //ダミーのroomId
-//        val ref = Firebase.database.getReference("rooms/-MQpGYwCbZVzKgawu6OD")
-
-        val uid = Firebase.auth.currentUser?.uid
-        ref.child("in_room_users").child(uid.toString()).setValue(uid)
-                .addOnSuccessListener {
-                    Log.d("HomeActivity", "save user to room in Firebase is success")
-                }
-                .addOnFailureListener {
-                    Log.d("HomeActivity", "save user to room in Firebase is failure")
-                }
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -96,9 +70,11 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     //recyclerViewのアイテムがクリックされた場合呼び出される
-    override fun onItemClicked(index: Int) {
+    //クリックされたアイテムのユーザー情報を引数にとる
+    override fun onItemClicked(index: Int, user: User) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
-
+        //intent先にユーザー情報を送る
+        intent.putExtra("USER_KEY", user)
         startActivity(intent)
     }
 
