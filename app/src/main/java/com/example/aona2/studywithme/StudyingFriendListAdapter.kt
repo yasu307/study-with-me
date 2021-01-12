@@ -29,11 +29,11 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     private val clickListener: Listener = listener
 
     inner class StudyingFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val user_icon = itemView.user_icon
-        val user_name = itemView.user_name
-        val task_name = itemView.task_name
-        val remain_time = itemView.remain_time
-        val task_status_icon = itemView.task_status_icon
+        val userIcon = itemView.user_icon
+        val userName = itemView.user_name
+        val taskName = itemView.task_name
+        val remainTime = itemView.remain_time
+        val taskStatusIcon = itemView.task_status_icon
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudyingFriendViewHolder {
@@ -44,53 +44,53 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     override fun onBindViewHolder(holder: StudyingFriendViewHolder, position: Int) {
 //        //ダミーデータを手動入力
 //        if(position == 0){
-//            holder.user_icon.setImageResource(R.drawable.member1)
-//            holder.user_name.text = "ヨシダ"
-//            holder.task_status_icon.setImageResource(R.drawable.study_status)
-//            holder.remain_time.text = "15分"
-//            holder.task_name.text = "実システム創造　進捗作成"
+//            holder.userIcon.setImageResource(R.drawable.member1)
+//            holder.userName.text = "ヨシダ"
+//            holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+//            holder.remainTime.text = "15分"
+//            holder.taskName.text = "実システム創造　進捗作成"
 //            holder.itemView.setOnClickListener {
 //                clickListener.onItemClicked(holder.adapterPosition)
 //            }
 //        }
 //        if(position == 1){
-//            holder.user_icon.setImageResource(R.drawable.member2)
-//            holder.user_name.text = "フクダ"
-//            holder.task_status_icon.setImageResource(R.drawable.breaktime_status)
-//            holder.remain_time.text = "2分"
-//            holder.task_name.text = ""
+//            holder.userIcon.setImageResource(R.drawable.member2)
+//            holder.userName.text = "フクダ"
+//            holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
+//            holder.remainTime.text = "2分"
+//            holder.taskName.text = ""
 //            holder.itemView.setOnClickListener {
 //                clickListener.onItemClicked(holder.adapterPosition)
 //            }
 //        }
 //        if(position == 2){
-//            holder.user_icon.setImageResource(R.drawable.member3)
-//            holder.user_name.text = "ヤマダ"
-//            holder.task_status_icon.setImageResource(R.drawable.study_status)
-//            holder.remain_time.text  = "20分"
-//            holder.task_name.text = "関連研究探し"
+//            holder.userIcon.setImageResource(R.drawable.member3)
+//            holder.userName.text = "ヤマダ"
+//            holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+//            holder.remainTime.text  = "20分"
+//            holder.taskName.text = "関連研究探し"
 //            holder.itemView.setOnClickListener {
 //                clickListener.onItemClicked(holder.adapterPosition)
 //            }
 //        }
         val user = users[position]
-        Picasso.get().load(user.userImageView).into(holder.user_icon)
-        holder.user_name.text = user.userName
-//        holder.task_status_icon.setImageResource(R.drawable.study_status)
-//        holder.remain_time.text = "20分"
-//        holder.task_name.text = "関連研究探し"
+        Picasso.get().load(user.userImageView).into(holder.userIcon)
+        holder.userName.text = user.userName
+//        holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+//        holder.remainTime.text = "20分"
+//        holder.taskName.text = "関連研究探し"
         holder.itemView.setOnClickListener {
             clickListener.onItemClicked(holder.adapterPosition)
         }
         if(position == 0){
-            holder.task_status_icon.setImageResource(R.drawable.study_status)
-            holder.remain_time.text  = "20分"
-            holder.task_name.text = "関連研究探し"
+            holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+            holder.remainTime.text  = "20分"
+            holder.taskName.text = "関連研究探し"
         }
         if(position == 1){
-            holder.task_status_icon.setImageResource(R.drawable.breaktime_status)
-            holder.remain_time.text = "2分"
-            holder.task_name.text = "実システム創造　進捗作成"
+            holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
+            holder.remainTime.text = "2分"
+            holder.taskName.text = "実システム創造　進捗作成"
         }
     }
 
