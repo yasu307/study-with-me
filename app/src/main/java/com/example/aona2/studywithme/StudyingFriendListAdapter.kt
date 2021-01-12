@@ -80,7 +80,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 //        holder.remainTime.text = "20分"
 //        holder.taskName.text = "関連研究探し"
         holder.itemView.setOnClickListener {
-            clickListener.onItemClicked(holder.adapterPosition, user)
+            clickListener.onItemClicked(holder.adapterPosition, user.uid)
         }
 
 
@@ -106,6 +106,6 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     //itemがクリックされたか監視
     interface Listener{
-        fun onItemClicked(index: Int, user: User)
+        fun onItemClicked(index: Int, uid: String)
     }
 }

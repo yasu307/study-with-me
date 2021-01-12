@@ -71,10 +71,10 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     //recyclerViewのアイテムがクリックされた場合呼び出される
     //クリックされたアイテムのユーザー情報を引数にとる
-    override fun onItemClicked(index: Int, user: User) {
+    override fun onItemClicked(index: Int, uid: String) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
         //intent先にユーザー情報を送る
-        intent.putExtra("USER_KEY", user)
+        intent.putExtra("USER_UID", uid)
         startActivity(intent)
     }
 

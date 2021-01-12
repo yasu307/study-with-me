@@ -18,8 +18,8 @@ class TaskNameInputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_name_input)
 
-        val friendStudyTogether = intent.getParcelableExtra<User>("USER_KEY")
-        //Log.d("TaskNameInputActivity", friendStudyTogether?.userName ?: "")
+        val uidStudyTogether = intent.getStringExtra("USER_UID")
+        Log.d("TaskNameInputActivity", "user id is $uidStudyTogether")
 
         start_task_button.setOnClickListener {
             if(friendStudyTogether == null){
@@ -27,7 +27,7 @@ class TaskNameInputActivity : AppCompatActivity() {
                 makeRoom()
             }else{
                 Log.d("TaskNameInputActivity", "start study with friend")
-                saveUserToRoom(ref)
+//                saveUserToRoom(ref)
             }
 
             val intent = Intent(this, StudyActivity::class.java)
