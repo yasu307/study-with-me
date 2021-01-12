@@ -17,21 +17,23 @@ class TaskNameInputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_name_input)
 
+        //HomeActivityからクリックしてきた人の勉強情報を取得する
         val friendCurrentStudyInfo = intent.getParcelableExtra<CurrentStudyInfo>("STUDY_INFO")
         Log.d("TaskNameInputActivity", "uid study together is ${friendCurrentStudyInfo?.uid}")
 
+        //スタートボタンが押された場合
         start_task_button.setOnClickListener {
-            if(friendCurrentStudyInfo == null){
+            if(friendCurrentStudyInfo == null){ // 一人で勉強を始める場合
                 Log.d("TaskNameInputActivity", "start study alone")
                 makeRoom()
-            }else{
+            }else{ // 友達に参加する場合
                 Log.d("TaskNameInputActivity", "start study with friend")
-
                 fetchFriendRoom(friendCurrentStudyInfo)
             }
         }
     }
 
+    //フレンドがいるルームの情報をDBから取得
     private fun fetchFriendRoom(friendCurrentStudyInfo: CurrentStudyInfo){
         val roomId = friendCurrentStudyInfo.roomId
         val roomRef = Firebase.database.getReference("/rooms/$roomId/")
@@ -41,6 +43,7 @@ class TaskNameInputActivity : AppCompatActivity() {
                 Log.d("TaskNameInputActivity", "fetch friend room is success")
                 val room = snapshot.getValue(Room::class.java)
                 if(room == null) return
+
                 saveUserToRoom(room)
             }
             override fun onCancelled(error: DatabaseError) {
@@ -49,6 +52,7 @@ class TaskNameInputActivity : AppCompatActivity() {
         })
     }
 
+    //ルームを作成
     private fun makeRoom(){
         val roomRef = Firebase.database.getReference("rooms").push()
         if(roomRef.key == null) return
@@ -65,6 +69,7 @@ class TaskNameInputActivity : AppCompatActivity() {
                 }
     }
 
+    //ルーム情報に自分のuidを追加
     private fun saveUserToRoom(room: Room){
         val uid = Firebase.auth.currentUser?.uid
         val roomRef = Firebase.database.getReference("rooms/${room.roomId}")
@@ -79,6 +84,7 @@ class TaskNameInputActivity : AppCompatActivity() {
                 }
     }
 
+    //自分の勉強情報をDBに追加
     private fun saveCurrentStudyInfoToFirebase(room: Room){
         val uid = Firebase.auth.currentUser?.uid
         if(uid == null) return
@@ -100,7 +106,7 @@ class TaskNameInputActivity : AppCompatActivity() {
                 }
     }
 
-
+    //roomに遷移する
     private fun moveToRoom(roomId: String){
         val intent = Intent(this, StudyActivity::class.java)
         intent.putExtra("ROOM_ID", roomId)

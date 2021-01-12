@@ -31,6 +31,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        //ログイン周り
         auth = Firebase.auth
         checkLogin()
 
@@ -42,10 +43,11 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         recyclerView.addItemDecoration(itemDecoration)
 
+        //Firebaseの情報をrecyclerViewに渡す
         fetchCurrentStudyInfos()
         fetchUsers()
 
-        //fabの設定
+        //fabがクリックされたら何も付加情報なしでTaskNameInputActivityに遷移
         start_study_alone_fab_homeActivity.setOnClickListener {
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
@@ -71,7 +73,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     //recyclerViewのアイテムがクリックされた場合呼び出される
-    //クリックされたアイテムのユーザー情報を引数にとる
+    //クリックされたユーザーの勉強情報を引数にとる
     override fun onItemClicked(index: Int, currentStudyInfo: CurrentStudyInfo) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
         //intent先にユーザー情報を送る
@@ -79,6 +81,8 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         startActivity(intent)
     }
 
+    //ログインしているか確認
+    //していなかったらMainActivityに遷移
     private fun checkLogin(){
         val currentUser = auth.currentUser
         if(currentUser == null){
@@ -91,6 +95,8 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         }
     }
 
+    //Firebaseから現在の勉強情報を取得する
+    //自動で更新するように変更
     private fun fetchCurrentStudyInfos(){
         val currentStudyInfos = mutableListOf<CurrentStudyInfo>()
         val currentStudyInfosRef = FirebaseDatabase.getInstance().getReference("/CurrentStudyInfos")
@@ -111,6 +117,8 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         })
     }
 
+    //Firebaseから全ユーザーの情報を取得する
+    //自動で更新するように変更する必要ある？
     private fun fetchUsers(){
         val users = mutableListOf<User>()
         val usersRef = FirebaseDatabase.getInstance().getReference("/users")

@@ -44,28 +44,37 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     override fun onBindViewHolder(holder: StudyingFriendViewHolder, position: Int) {
         val currentStudyInfo = currentStudyInfos[position]
+        //タスク名を入力
         holder.taskName.text = currentStudyInfo.taskName
 
+        //uidからユーザー情報を取得
+        //全探索しているのでもっと簡単にできないか？
         var user: User? = null
         users.forEach {
             if(it.uid == currentStudyInfo.uid) user = it
         }
         if(user == null) return
 
+        //ユーザーアイコンとユーザー名を入力
         Picasso.get().load(user!!.userImageView).into(holder.userIcon)
         holder.userName.text = user!!.userName
 
+        //クリックされたら、ポジションと勉強情報をHomeActivityに送信
         holder.itemView.setOnClickListener {
             clickListener.onItemClicked(holder.adapterPosition, currentStudyInfo)
         }
     }
 
+    //フィールドに現在の勉強情報を保持　変更があれば自動で更新される
+    //HomeActivityから呼ばれる
     internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
         this.currentStudyInfos = currentStudyInfos
         Log.d("studying friend list adapter", currentStudyInfos.size.toString())
         notifyDataSetChanged()
     }
 
+    //フィールドに全ユーザーの情報を保持　変更があれば自動で更新される必要がある？
+    //HomeActivityから呼ばれる
     internal fun setUsers(users: MutableList<User>){
         this.users = users
         Log.d("studying friend list adapter", users.size.toString())
