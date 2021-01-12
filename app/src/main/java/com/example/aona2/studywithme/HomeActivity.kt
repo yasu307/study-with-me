@@ -19,9 +19,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home.*
+import java.util.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
-    //betu PC kara test
 
     private lateinit var auth: FirebaseAuth
 
@@ -54,7 +54,28 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     private fun startStudyAlone(){
         val ref = Firebase.database.getReference("rooms").push()
+        if(ref.key == null) return
+        val nowMillis = Calendar.getInstance().timeInMillis
+        val room = Room(ref.key!!, nowMillis)
+        ref.setValue(room)
+                .addOnSuccessListener {
+                    Log.d("HomeActivity", "save room to Firebase is success")
+                }
+                .addOnFailureListener {
+                    Log.d("HomeActivity", "save room to Firebase is failure")
+                }
 
+//        //ダミーのroomId
+//        val ref = Firebase.database.getReference("rooms/-MQpGYwCbZVzKgawu6OD")
+
+        val uid = Firebase.auth.currentUser?.uid
+        ref.child("in_room_users").child(uid.toString()).setValue(uid)
+                .addOnSuccessListener {
+                    Log.d("HomeActivity", "save user to room in Firebase is success")
+                }
+                .addOnFailureListener {
+                    Log.d("HomeActivity", "save user to room in Firebase is failure")
+                }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -77,6 +98,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     //recyclerViewのアイテムがクリックされた場合呼び出される
     override fun onItemClicked(index: Int) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
+
         startActivity(intent)
     }
 

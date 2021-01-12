@@ -1,4 +1,5 @@
 package com.example.aona2.studywithme
 
-class Room(val roomId: String, val roomStartAt: Long, ) {
+class Room(val roomId: String, val roomStartAt: Long) {
+    constructor() : this("",0)
 }
