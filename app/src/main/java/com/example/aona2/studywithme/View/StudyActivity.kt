@@ -1,10 +1,15 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.View
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aona2.studywithme.Model.Room
+import com.example.aona2.studywithme.Model.User
+import com.example.aona2.studywithme.R
+import com.example.aona2.studywithme.TimeManage.CalcRemainTime
+import com.example.aona2.studywithme.TimeManage.MyCountDownTimer
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -78,7 +83,8 @@ class StudyActivity : AppCompatActivity() {
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
 
         //タイマーに設定する残り時間を計算
-        val remainTime:Pair<Long, Boolean> = CalcRemainTime(startRoomAtMillis?:return).calcRemainTime()
+        val remainTime:Pair<Long, Boolean> = CalcRemainTime(startRoomAtMillis
+                ?: return).calcRemainTime()
 
         //タイマーをセット、開始
         myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)

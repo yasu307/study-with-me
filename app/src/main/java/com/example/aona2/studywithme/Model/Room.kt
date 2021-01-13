@@ -1,4 +1,4 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.Model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

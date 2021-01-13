@@ -1,4 +1,4 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.View
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import com.example.aona2.studywithme.Model.User
+import com.example.aona2.studywithme.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -134,7 +136,8 @@ class MainActivity : AppCompatActivity() {
         val database = Firebase.database
         val ref = database.getReference("users/$uid")
 
-        val user = User(uid?:"", username_edittext_register.text.toString(), userImageView)
+        val user = User(uid
+                ?: "", username_edittext_register.text.toString(), userImageView)
         ref.setValue(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "save user to Firebase is success")

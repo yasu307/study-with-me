@@ -1,20 +1,13 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.View
 
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.view.menu.ListMenuItemView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.example.aona2.studywithme.Model.CurrentStudyInfo
+import com.example.aona2.studywithme.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 

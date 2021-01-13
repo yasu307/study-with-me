@@ -1,11 +1,12 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.View
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aona2.studywithme.Model.User
+import com.example.aona2.studywithme.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_item_in_room.view.*
 

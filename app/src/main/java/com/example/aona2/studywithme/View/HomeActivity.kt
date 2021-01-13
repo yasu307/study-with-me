@@ -1,25 +1,24 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.View
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Debug
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.aona2.studywithme.Model.CurrentStudyInfo
+import com.example.aona2.studywithme.Model.User
+import com.example.aona2.studywithme.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home.*
-import java.util.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 

@@ -1,13 +1,11 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.TimeManage
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Color
-import android.media.SoundPool
 import android.os.CountDownTimer
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.aona2.studywithme.R
+import com.example.aona2.studywithme.View.StudyActivity
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
 import java.util.*
