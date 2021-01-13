@@ -57,6 +57,11 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        adapter.notifyDataSetChanged()
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
