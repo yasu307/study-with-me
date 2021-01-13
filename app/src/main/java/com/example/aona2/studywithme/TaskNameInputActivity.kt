@@ -99,7 +99,7 @@ class TaskNameInputActivity : AppCompatActivity() {
         currentStudyInfoRef.setValue(currentStudyInfo)
                 .addOnSuccessListener {
                     Log.d("TaskNameInputActivity", "save studyInfo to Firebase is success")
-                    moveToRoom(room.roomId)
+                    moveToRoom(room)
                 }
                 .addOnFailureListener {
                     Log.d("TaskNameInputActivity", "save studyInfo to Firebase is failure")
@@ -107,9 +107,9 @@ class TaskNameInputActivity : AppCompatActivity() {
     }
 
     //roomに遷移する
-    private fun moveToRoom(roomId: String){
+    private fun moveToRoom(room: Room){
         val intent = Intent(this, StudyActivity::class.java)
-        intent.putExtra("ROOM_ID", roomId)
+        intent.putExtra("ROOM_KEY", room)
         startActivity(intent)
     }
 }

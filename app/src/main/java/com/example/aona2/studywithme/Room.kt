@@ -1,5 +1,9 @@
 package com.example.aona2.studywithme
 
-class Room(val roomId: String, val roomStartAt: Long) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class Room(val roomId: String, val roomStartAt: Long): Parcelable {
     constructor() : this("",0)
 }

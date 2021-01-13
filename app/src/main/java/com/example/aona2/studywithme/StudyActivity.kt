@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,6 +15,8 @@ import java.util.*
 class StudyActivity : AppCompatActivity() {
     private var startRoomAtMillis: Long? = null
     private var myCountDownTimer: MyCountDownTimer? = null
+
+    private lateinit var adapter: InRoomFriendListAdapter
 
     //ログで時間を表示するときのフォーマット
     private val simpleDateFormat = SimpleDateFormat("yyyy年MM月dd日 HH時mm分ss.SSS秒")
@@ -31,12 +36,14 @@ class StudyActivity : AppCompatActivity() {
         Log.d("StudyActivity", "room id is ${room?.roomId}")
 
         //recyclerviewの設定
-        val adapter = InRoomFriendListAdapter(this)
+        adapter = InRoomFriendListAdapter(this)
         in_room_friend_recyclerview.adapter = adapter
         in_room_friend_recyclerview.layoutManager = LinearLayoutManager(this)
         //recyclerViewに枠線をつける
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         in_room_friend_recyclerview.addItemDecoration(itemDecoration)
+
+        makeInRoomUsers(room?:return)
 
         //ダミーのルーム開始時間をセット
         val startRoomAtCalendar = Calendar.getInstance()
@@ -46,6 +53,30 @@ class StudyActivity : AppCompatActivity() {
         //Log.d("StudyActivity", "start room at millis is ${startRoomAtMillis} ")
 
         startTimer()
+    }
+
+    //Firebaseから現在の勉強情報を取得する
+    //自動で更新するように変更
+    private fun makeInRoomUsers(room: Room){
+        Log.d("StudyActivity","make in room users")
+        var inRoomUsersList: MutableList<User> = mutableListOf<User>()
+        val inRoomUsersRef = Firebase.database.getReference("rooms/${room.roomId}/in_room_users")
+        inRoomUsersRef.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val uid = snapshot.getValue()
+                Log.d("StudyActivity", "in room user id is ${uid}")
+                inRoomUsersList.add(HomeActivity.users[uid] as User)
+                adapter.setInRoomUsers(inRoomUsersList)
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+            }
+        })
     }
 
     //現在実行中のモードの残り時間を計算　返り値　Pair<残り時間（ミリ秒）,勉強中か？>
