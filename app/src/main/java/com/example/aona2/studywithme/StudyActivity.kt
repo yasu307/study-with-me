@@ -27,8 +27,8 @@ class StudyActivity : AppCompatActivity() {
         setContentView(R.layout.activity_study)
 
         Log.d("StudyActivity", "onCreate")
-        val roomId = intent.getStringExtra("ROOM_ID")
-        Log.d("StudyActivity", "room id is $roomId")
+        val room = intent.getParcelableExtra<Room>("ROOM_KEY")
+        Log.d("StudyActivity", "room id is ${room?.roomId}")
 
         //recyclerviewの設定
         val adapter = InRoomFriendListAdapter(this)
@@ -85,7 +85,12 @@ class StudyActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("StudyActivity", "onDestroy")
         //一応タイマーをキャンセルしておく
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
+
+        //Firebase上の退出処理をする
+        //Roomから自分のuidを削除する
+
     }
 }

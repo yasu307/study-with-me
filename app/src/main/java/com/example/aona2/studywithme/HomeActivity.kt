@@ -23,6 +23,10 @@ import java.util.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
+    companion object{
+        var users: MutableMap<String, User> = mutableMapOf<String, User>()
+    }
+
     private lateinit var auth: FirebaseAuth
 
     private lateinit var adapter: StudyingFriendListAdapter
@@ -120,19 +124,14 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     //Firebaseから全ユーザーの情報を取得する
     //自動で更新するように変更する必要ある？
     private fun fetchUsers(){
-        val users = mutableListOf<User>()
         val usersRef = FirebaseDatabase.getInstance().getReference("/users")
         usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
                     val user = it.getValue(User::class.java)
                     Log.d("HomeActivity",user?.userName?:"")
-                    if(user != null) users.add(user)
-                    users.forEach {
-                        Log.d("mutable list of user", it.userName.toString())
-                    }
+                    if(user != null) users[it.key!!] = user
                 }
-                adapter.setUsers(users)
             }
             override fun onCancelled(error: DatabaseError) {
 

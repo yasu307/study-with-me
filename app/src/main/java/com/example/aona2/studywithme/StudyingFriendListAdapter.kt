@@ -25,7 +25,6 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
-    private var users = mutableListOf<User>()
 
     private val clickListener: Listener = listener
 
@@ -47,12 +46,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
         //タスク名を入力
         holder.taskName.text = currentStudyInfo.taskName
 
-        //uidからユーザー情報を取得
-        //全探索しているのでもっと簡単にできないか？
-        var user: User? = null
-        users.forEach {
-            if(it.uid == currentStudyInfo.uid) user = it
-        }
+        val user = HomeActivity.users[currentStudyInfo.uid]
         if(user == null) return
 
         //ユーザーアイコンとユーザー名を入力
@@ -70,14 +64,6 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
         this.currentStudyInfos = currentStudyInfos
         Log.d("studying friend list adapter", currentStudyInfos.size.toString())
-        notifyDataSetChanged()
-    }
-
-    //フィールドに全ユーザーの情報を保持　変更があれば自動で更新される必要がある？
-    //HomeActivityから呼ばれる
-    internal fun setUsers(users: MutableList<User>){
-        this.users = users
-        Log.d("studying friend list adapter", users.size.toString())
         notifyDataSetChanged()
     }
 
