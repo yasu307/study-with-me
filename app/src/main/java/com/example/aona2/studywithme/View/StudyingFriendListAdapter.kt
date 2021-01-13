@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aona2.studywithme.Model.CurrentStudyInfo
 import com.example.aona2.studywithme.R
+import com.example.aona2.studywithme.TimeManage.CalcRemainTime
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
@@ -45,6 +46,13 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
         //ユーザーアイコンとユーザー名を入力
         Picasso.get().load(user!!.userImageView).into(holder.userIcon)
         holder.userName.text = user!!.userName
+
+        val remainTime = CalcRemainTime(currentStudyInfo.roomStartAt).calcRemainTime()
+
+        if (remainTime.second) holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+        else holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
+
+        holder.remainTime.text  = "${remainTime.first / 60000}分"
 
         //クリックされたら、ポジションと勉強情報をHomeActivityに送信
         holder.itemView.setOnClickListener {
