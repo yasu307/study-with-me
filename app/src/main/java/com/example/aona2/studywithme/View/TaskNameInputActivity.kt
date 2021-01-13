@@ -24,6 +24,11 @@ class TaskNameInputActivity : AppCompatActivity() {
         val friendCurrentStudyInfo = intent.getParcelableExtra<CurrentStudyInfo>("STUDY_INFO")
         Log.d("TaskNameInputActivity", "uid study together is ${friendCurrentStudyInfo?.uid}")
 
+        if(friendCurrentStudyInfo != null){
+            val friendName = HomeActivity.users[friendCurrentStudyInfo.uid]?.userName
+            clicked_friend_name_textView.text = "${friendName} の勉強に参加"
+        }
+
         //スタートボタンが押された場合
         start_task_button.setOnClickListener {
             if(friendCurrentStudyInfo == null){ // 一人で勉強を始める場合
