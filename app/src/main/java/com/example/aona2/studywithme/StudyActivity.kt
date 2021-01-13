@@ -21,12 +21,6 @@ class StudyActivity : AppCompatActivity() {
     //ログで時間を表示するときのフォーマット
     private val simpleDateFormat = SimpleDateFormat("yyyy年MM月dd日 HH時mm分ss.SSS秒")
 
-    //一周の時間
-    private val oneRoopMin = 30
-    //休憩の時間
-    //つまり　勉強時間 = oneRoopMin - breaktimeMin
-    private val breaktimeMin = 5
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
@@ -47,10 +41,9 @@ class StudyActivity : AppCompatActivity() {
 
         //ダミーのルーム開始時間をセット
         val startRoomAtCalendar = Calendar.getInstance()
-        startRoomAtCalendar.set(2021,0,12,10,10,0)
+        startRoomAtCalendar.set(2021,0,13,15,0,0)
         startRoomAtMillis = startRoomAtCalendar.timeInMillis
         Log.d("StudyActivity", "start room at  ${simpleDateFormat.format(startRoomAtMillis)}")
-        //Log.d("StudyActivity", "start room at millis is ${startRoomAtMillis} ")
 
         startTimer()
     }
@@ -79,35 +72,13 @@ class StudyActivity : AppCompatActivity() {
         })
     }
 
-    //現在実行中のモードの残り時間を計算　返り値　Pair<残り時間（ミリ秒）,勉強中か？>
-    //もっと簡素にできないか？
-    //MyCountDownTImerに移行すべき？
-    private fun calcRemainTime(): Pair<Long, Boolean> {
-        if (startRoomAtMillis == null) return Pair(0,true)
-
-        //現在の時間
-        val currentTimeMillis = Calendar.getInstance().timeInMillis
-        Log.d("StudyActivity", "current time is ${simpleDateFormat.format(currentTimeMillis)} ")
-        //Log.d("StudyActivity", "current time millis is ${currentTimeMillis} ")
-        //経過時間
-        val elapsedTimeMillis = currentTimeMillis - startRoomAtMillis!!
-        Log.d("StudyActivity", "elapsed time millis is $elapsedTimeMillis")
-        //残り時間
-        val remainTimeMillis = ((oneRoopMin * 60 * 1000) - (elapsedTimeMillis % (oneRoopMin * 60 * 1000)))
-        Log.d("StudyActivity", "remain time is $remainTimeMillis")
-
-        //残り時間が5分以上なら勉強中、そうでないなら休憩中
-        if (remainTimeMillis >= breaktimeMin * 60 * 1000) return Pair(remainTimeMillis - breaktimeMin * 60 * 1000, true)
-        else return Pair(remainTimeMillis, false)
-    }
-
     //タイマーの起動
     fun startTimer() {
         //最初のタイマー起動の場合はキャンセルしない
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
 
         //タイマーに設定する残り時間を計算
-        val remainTime:Pair<Long, Boolean> = calcRemainTime()
+        val remainTime:Pair<Long, Boolean> = CalcRemainTime(startRoomAtMillis?:return).calcRemainTime()
 
         //タイマーをセット、開始
         myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
