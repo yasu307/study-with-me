@@ -10,12 +10,14 @@ import com.example.aona2.studywithme.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_item_in_room.view.*
 
-//StudyActivityのルームにいる人リストのアダプター
+//StudyActivityのrecyclerViewのアダプター
+//ルームにいる人のリスト
 class InRoomFriendListAdapter internal constructor(context: Context)
     : RecyclerView.Adapter<InRoomFriendListAdapter.InRoomFriendViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
+    //ルームにいる人のリスト　StudyActivityから更新される
     private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
 
     inner class InRoomFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -37,8 +39,8 @@ class InRoomFriendListAdapter internal constructor(context: Context)
 
     override fun getItemCount(): Int = inRoomUsersList.size
 
-    //フィールドに現在の勉強情報を保持　変更があれば自動で更新される
-    //HomeActivityから呼ばれる
+    //フィールドにルームにいるユーザーを保持　変更があれば自動で更新される
+    //StudyActivityから呼ばれる
     internal fun setInRoomUsers(inRoomUsersList: MutableList<User>){
         this.inRoomUsersList = inRoomUsersList
         notifyDataSetChanged()

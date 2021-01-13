@@ -22,8 +22,8 @@ class TaskNameInputActivity : AppCompatActivity() {
 
         //HomeActivityからクリックしてきた人の勉強情報を取得する
         val friendCurrentStudyInfo = intent.getParcelableExtra<CurrentStudyInfo>("STUDY_INFO")
-        Log.d("TaskNameInputActivity", "uid study together is ${friendCurrentStudyInfo?.uid}")
 
+        //参加する先の友達を表示する
         if(friendCurrentStudyInfo != null){
             val friendName = HomeActivity.users[friendCurrentStudyInfo.uid]?.userName
             clicked_friend_name_textView.text = "${friendName} の勉強に参加"
@@ -39,6 +39,24 @@ class TaskNameInputActivity : AppCompatActivity() {
                 fetchFriendRoom(friendCurrentStudyInfo)
             }
         }
+    }
+
+    //ルームを作成　
+    //一人で勉強を開始するときのみ使用する
+    private fun makeRoom(){
+        val roomRef = Firebase.database.getReference("rooms").push()
+        if(roomRef.key == null) return
+        val nowMillis = Calendar.getInstance().timeInMillis
+        val room = Room(roomRef.key!!, nowMillis)
+        roomRef.setValue(room)
+                .addOnSuccessListener {
+                    Log.d("HomeActivity", "save room to Firebase is success")
+
+                    saveUserToRoom(room)
+                }
+                .addOnFailureListener {
+                    Log.d("HomeActivity", "save room to Firebase is failure")
+                }
     }
 
     //フレンドがいるルームの情報をDBから取得
@@ -58,23 +76,6 @@ class TaskNameInputActivity : AppCompatActivity() {
                 Log.d("TaskNameInputActivity", "fetch friend room is failure")
             }
         })
-    }
-
-    //ルームを作成
-    private fun makeRoom(){
-        val roomRef = Firebase.database.getReference("rooms").push()
-        if(roomRef.key == null) return
-        val nowMillis = Calendar.getInstance().timeInMillis
-        val room = Room(roomRef.key!!, nowMillis)
-        roomRef.setValue(room)
-                .addOnSuccessListener {
-                    Log.d("HomeActivity", "save room to Firebase is success")
-
-                    saveUserToRoom(room)
-                }
-                .addOnFailureListener {
-                    Log.d("HomeActivity", "save room to Firebase is failure")
-                }
     }
 
     //ルーム情報に自分のuidを追加
@@ -114,7 +115,8 @@ class TaskNameInputActivity : AppCompatActivity() {
                 }
     }
 
-    //roomに遷移する
+    //StudyActivityに遷移（roomに遷移）
+    //intentに参加する部屋の情報を付加する
     private fun moveToRoom(room: Room){
         val intent = Intent(this, StudyActivity::class.java)
         intent.putExtra("ROOM_KEY", room)

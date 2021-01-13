@@ -5,6 +5,8 @@ import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
+//roomの開始時間から残り時間の計算をするクラス
+//今のところ必ずcalcRemainTime()を呼び出す CalcRemainTime(millis).calcRemainTime()
 class CalcRemainTime(private val startRoomAtMillis: Long)  {
     //一周の時間
     private val oneRoopMin = 30
@@ -25,6 +27,7 @@ class CalcRemainTime(private val startRoomAtMillis: Long)  {
         //経過時間
         val elapsedTimeMillis = currentTimeMillis - startRoomAtMillis
         Log.d("StudyActivity", "elapsed time millis is $elapsedTimeMillis")
+
         //残り時間
         val remainTimeMillis = ((oneRoopMin * 60 * 1000) - (elapsedTimeMillis % (oneRoopMin * 60 * 1000)))
         Log.d("StudyActivity", "remain time is $remainTimeMillis")

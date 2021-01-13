@@ -18,6 +18,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
+    //現在の勉強情報　HomeActivityから更新される
     private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
 
     private val clickListener: Listener = listener
@@ -40,6 +41,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
         //タスク名を入力
         holder.taskName.text = currentStudyInfo.taskName
 
+        //HomeActivityのusersを使用する
         val user = HomeActivity.users[currentStudyInfo.uid]
         if(user == null) return
 
@@ -47,12 +49,13 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
         Picasso.get().load(user!!.userImageView).into(holder.userIcon)
         holder.userName.text = user!!.userName
 
+        //残り時間を計算
         val remainTime = CalcRemainTime(currentStudyInfo.roomStartAt).calcRemainTime()
-
+        //勉強中か？のステータスアイコンを出す
         if (remainTime.second) holder.taskStatusIcon.setImageResource(R.drawable.study_status)
         else holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
-
-        holder.remainTime.text  = "${remainTime.first / 60000}分"
+        //残り時間を表示　ミリ秒->分に変換
+        holder.remainTime.text = "${remainTime.first / 60000}分"
 
         //クリックされたら、ポジションと勉強情報をHomeActivityに送信
         holder.itemView.setOnClickListener {
@@ -60,7 +63,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
         }
     }
 
-    //フィールドに現在の勉強情報を保持　変更があれば自動で更新される
+    //フィールドに現在の勉強情報を保持　変更があれば自動で更新する(まだされない)
     //HomeActivityから呼ばれる
     internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
         this.currentStudyInfos = currentStudyInfos
@@ -70,7 +73,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     override fun getItemCount() = currentStudyInfos.size
 
-    //itemがクリックされたか監視
+    //itemがクリックされたか
     interface Listener{
         fun onItemClicked(index: Int, currentStudyInfo: CurrentStudyInfo)
     }

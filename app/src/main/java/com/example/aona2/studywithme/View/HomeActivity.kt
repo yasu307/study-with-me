@@ -22,11 +22,10 @@ import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
+    //ユーザー情報を保持しておく　他アクティビティから使用される
     companion object{
         var users: MutableMap<String, User> = mutableMapOf<String, User>()
     }
-
-    private lateinit var auth: FirebaseAuth
 
     private lateinit var adapter: StudyingFriendListAdapter
 
@@ -34,8 +33,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        //ログイン周り
-        auth = Firebase.auth
+        //ログインしているかチェック
         checkLogin()
 
         //recyclerViewの設定
@@ -46,22 +44,23 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         recyclerView.addItemDecoration(itemDecoration)
 
-        //Firebaseの情報をrecyclerViewに渡す
+        //Firebaseの情報を取得し、recyclerViewに渡す
         fetchCurrentStudyInfos()
         fetchUsers()
 
-        //fabがクリックされたら何も付加情報なしでTaskNameInputActivityに遷移
+        //fabがクリックされたら一人で勉強を開始
+        //何も付加情報なしでTaskNameInputActivityに遷移
         start_study_alone_fab_homeActivity.setOnClickListener {
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
     }
 
+    //resumeのときrecyclerViewを更新
     override fun onResume() {
         super.onResume()
         adapter.notifyDataSetChanged()
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -92,7 +91,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     //ログインしているか確認
     //していなかったらMainActivityに遷移
     private fun checkLogin(){
-        val currentUser = auth.currentUser
+        val currentUser = Firebase.auth.currentUser
         if(currentUser == null){
             Log.d(MainActivity.TAG,"user is not login")
             //HomeActivityへ遷移する
@@ -125,7 +124,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         })
     }
 
-    //Firebaseから全ユーザーの情報を取得する
+    //Firebaseから全ユーザーの情報を取得し、companion objectのusersにて保持
     //自動で更新するように変更する必要ある？
     private fun fetchUsers(){
         val usersRef = FirebaseDatabase.getInstance().getReference("/users")
@@ -138,7 +137,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-
             }
         })
     }

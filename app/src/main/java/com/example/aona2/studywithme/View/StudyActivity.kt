@@ -30,9 +30,11 @@ class StudyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
 
-        Log.d("StudyActivity", "onCreate")
         val room = intent.getParcelableExtra<Room>("ROOM_KEY")
         Log.d("StudyActivity", "room id is ${room?.roomId}")
+
+        startRoomAtMillis = room?.roomStartAt
+        Log.d("StudyActivity", "start room at  ${simpleDateFormat.format(startRoomAtMillis)}")
 
         //recyclerviewの設定
         adapter = InRoomFriendListAdapter(this)
@@ -42,18 +44,15 @@ class StudyActivity : AppCompatActivity() {
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         in_room_friend_recyclerview.addItemDecoration(itemDecoration)
 
-        makeInRoomUsers(room?:return)
-
-        startRoomAtMillis = room.roomStartAt
-
-        Log.d("StudyActivity", "start room at  ${simpleDateFormat.format(startRoomAtMillis)}")
+        //ルームにいる人のリストを作成 adapterに適用する
+        makeInRoomUsersList(room?:return)
 
         startTimer()
     }
 
     //Firebaseから現在の勉強情報を取得する
     //自動で更新するように変更
-    private fun makeInRoomUsers(room: Room){
+    private fun makeInRoomUsersList(room: Room){
         Log.d("StudyActivity","make in room users")
         var inRoomUsersList: MutableList<User> = mutableListOf<User>()
         val inRoomUsersRef = Firebase.database.getReference("rooms/${room.roomId}/in_room_users")
