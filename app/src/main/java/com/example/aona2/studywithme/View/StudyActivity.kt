@@ -44,10 +44,8 @@ class StudyActivity : AppCompatActivity() {
 
         makeInRoomUsers(room?:return)
 
-        //ダミーのルーム開始時間をセット
-        val startRoomAtCalendar = Calendar.getInstance()
-        startRoomAtCalendar.set(2021,0,13,15,0,0)
-        startRoomAtMillis = startRoomAtCalendar.timeInMillis
+        startRoomAtMillis = room.roomStartAt
+
         Log.d("StudyActivity", "start room at  ${simpleDateFormat.format(startRoomAtMillis)}")
 
         startTimer()
@@ -82,9 +80,8 @@ class StudyActivity : AppCompatActivity() {
         //最初のタイマー起動の場合はキャンセルしない
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
 
-        //タイマーに設定する残り時間を計算
-        val remainTime:Pair<Long, Boolean> = CalcRemainTime(startRoomAtMillis
-                ?: return).calcRemainTime()
+        //残り時間の計算
+        val remainTime = CalcRemainTime(startRoomAtMillis?:return).calcRemainTime()
 
         //タイマーをセット、開始
         myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
