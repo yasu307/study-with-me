@@ -13,10 +13,7 @@ import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -28,6 +25,8 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     private lateinit var adapter: StudyingFriendListAdapter
+
+    private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,16 +104,34 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     //Firebaseから現在の勉強情報を取得する
     //自動で更新するように変更
     private fun fetchCurrentStudyInfos(){
-        val currentStudyInfos = mutableListOf<CurrentStudyInfo>()
         val currentStudyInfosRef = FirebaseDatabase.getInstance().getReference("/CurrentStudyInfos")
-        currentStudyInfosRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.forEach {
-                    val currentStudyInfo = it.getValue(CurrentStudyInfo::class.java)
-                    if(currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
-                    currentStudyInfos.forEach {
-                        Log.d("mutable list of current study infos", it.uid.toString())
-                    }
+        currentStudyInfosRef.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
+                if (currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
+                adapter.setCurrentStudyInfos(currentStudyInfos)
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
+                if (currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
+                adapter.setCurrentStudyInfos(currentStudyInfos)
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                Log.d("HomeActivity","on child removed")
+                for (currentStudyInfo in currentStudyInfos) {
+                    val userName = HomeActivity.users[currentStudyInfo.uid]?.userName
+                    Log.d("HomeActivity","current study info before remove is $userName")
+                }
+                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
+                if (currentStudyInfo != null) currentStudyInfos.remove(currentStudyInfo)
+                val userName = HomeActivity.users[currentStudyInfo?.uid]?.userName
+                Log.d("HomeActivity","removed child name is $userName")
+                for (currentStudyInfo in currentStudyInfos) {
+                    val userName = HomeActivity.users[currentStudyInfo.uid]?.userName
+                    Log.d("HomeActivity","current study info is $userName")
                 }
                 adapter.setCurrentStudyInfos(currentStudyInfos)
             }
