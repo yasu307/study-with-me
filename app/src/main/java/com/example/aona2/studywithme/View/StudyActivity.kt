@@ -10,6 +10,7 @@ import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.TimeManage.CalcRemainTime
 import com.example.aona2.studywithme.TimeManage.MyCountDownTimer
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -23,6 +24,10 @@ class StudyActivity : AppCompatActivity() {
 
     private lateinit var adapter: InRoomFriendListAdapter
 
+    private var room: Room? = null
+
+    private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
+
     //ログで時間を表示するときのフォーマット
     private val simpleDateFormat = SimpleDateFormat("yyyy年MM月dd日 HH時mm分ss.SSS秒")
 
@@ -30,7 +35,7 @@ class StudyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
 
-        val room = intent.getParcelableExtra<Room>("ROOM_KEY")
+        room = intent.getParcelableExtra<Room>("ROOM_KEY")
         Log.d("StudyActivity", "room id is ${room?.roomId}")
 
         startRoomAtMillis = room?.roomStartAt
@@ -45,31 +50,35 @@ class StudyActivity : AppCompatActivity() {
         in_room_friend_recyclerview.addItemDecoration(itemDecoration)
 
         //ルームにいる人のリストを作成 adapterに適用する
-        makeInRoomUsersList(room?:return)
+        makeInRoomUsersList()
 
         startTimer()
     }
 
     //Firebaseから現在の勉強情報を取得する
     //自動で更新するように変更
-    private fun makeInRoomUsersList(room: Room){
+    private fun makeInRoomUsersList(){
         Log.d("StudyActivity","make in room users")
-        var inRoomUsersList: MutableList<User> = mutableListOf<User>()
-        val inRoomUsersRef = Firebase.database.getReference("rooms/${room.roomId}/in_room_users")
+        val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/in_room_users")
         inRoomUsersRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val uid = snapshot.getValue()
-                Log.d("StudyActivity", "in room user id is ${uid}")
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val uid = snapshot.getValue()
+                inRoomUsersList.add(HomeActivity.users[uid] as User)
+                adapter.setInRoomUsers(inRoomUsersList)
             }
             override fun onCancelled(error: DatabaseError) {
             }
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
             }
             override fun onChildRemoved(snapshot: DataSnapshot) {
+                val uid = snapshot.getValue()
+                inRoomUsersList.remove(HomeActivity.users[uid] as User)
+                adapter.setInRoomUsers(inRoomUsersList)
             }
         })
     }
@@ -93,8 +102,32 @@ class StudyActivity : AppCompatActivity() {
         //一応タイマーをキャンセルしておく
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
 
-        //Firebase上の退出処理をする
-        //Roomから自分のuidを削除する
+        //Firebase上の退出処理
+        val currentUser = Firebase.auth.currentUser
 
+        //もしRoomに自分しかいなかったらRoomを削除
+        if(inRoomUsersList.size == 1){
+            val roomRef = Firebase.database.getReference("rooms/${room?.roomId}")
+            roomRef.removeValue().addOnSuccessListener {
+                Log.d("StudyActivity","delete room is success")
+            }.addOnFailureListener {
+                Log.d("StudyActivity","delete room is failure")
+            }
+        }else{ //そうじゃなかったらRoomから自分のuidのみを削除
+            val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/in_room_users/${currentUser?.uid}")
+            inRoomUsersRef.removeValue().addOnSuccessListener {
+                Log.d("StudyActivity","delete my uid is success")
+            }.addOnFailureListener {
+                Log.d("StudyActivity","delete my uid is failure")
+            }
+        }
+
+        //自分の勉強情報を削除
+        val currentStudyInfoRef = Firebase.database.getReference("CurrentStudyInfos/${currentUser?.uid}")
+        currentStudyInfoRef.removeValue().addOnSuccessListener{
+            Log.d("StudyActivity","delete my current study info is success")
+        }.addOnFailureListener {
+            Log.d("StudyActivity","delete my current study info is failure")
+        }
     }
 }
