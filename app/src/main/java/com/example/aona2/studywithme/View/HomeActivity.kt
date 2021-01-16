@@ -26,7 +26,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     private lateinit var adapter: StudyingFriendListAdapter
 
-    private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
+    private var currentStudyInfos: MutableList<CurrentStudyInfo> = mutableListOf<CurrentStudyInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,19 +120,8 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
             }
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                Log.d("HomeActivity","on child removed")
-                for (currentStudyInfo in currentStudyInfos) {
-                    val userName = HomeActivity.users[currentStudyInfo.uid]?.userName
-                    Log.d("HomeActivity","current study info before remove is $userName")
-                }
                 val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
                 if (currentStudyInfo != null) currentStudyInfos.remove(currentStudyInfo)
-                val userName = HomeActivity.users[currentStudyInfo?.uid]?.userName
-                Log.d("HomeActivity","removed child name is $userName")
-                for (currentStudyInfo in currentStudyInfos) {
-                    val userName = HomeActivity.users[currentStudyInfo.uid]?.userName
-                    Log.d("HomeActivity","current study info is $userName")
-                }
                 adapter.setCurrentStudyInfos(currentStudyInfos)
             }
             override fun onCancelled(error: DatabaseError) {
@@ -149,7 +138,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
                     val user = it.getValue(User::class.java)
-                    Log.d("HomeActivity",user?.userName?:"")
                     if(user != null) users[it.key!!] = user
                 }
             }

@@ -67,7 +67,6 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     //HomeActivityから呼ばれる
     internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
         this.currentStudyInfos = currentStudyInfos
-        Log.d("studying friend list adapter", currentStudyInfos.size.toString())
         notifyDataSetChanged()
     }
 
