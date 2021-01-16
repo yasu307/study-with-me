@@ -5,7 +5,7 @@ import android.widget.ImageView
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class CurrentStudyInfo(val uid: String,
+data class CurrentStudyInfo(val uid: String,
                        val roomId: String,
                        val taskName: String,
                        val roomStartAt: Long,
