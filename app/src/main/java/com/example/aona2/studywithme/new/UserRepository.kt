@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.FirebaseCommonRegistrar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -70,9 +71,14 @@ class UserRepository {
         var uid: String? = null
         Firebase.auth.signOut()
         Log.d("UserRepository","create user")
-        Firebase.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-            uid = Firebase.auth.currentUser?.uid
-        }.await()
+        try{
+            Firebase.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
+                uid = Firebase.auth.currentUser?.uid
+            }.await()
+        }catch (e: FirebaseAuthException){
+            Log.d("UserRepository","catch exception")
+            return null
+        }
         Log.d("UserRepository","this is end of create user")
         return uid
     }

@@ -20,14 +20,11 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    //master test
     private lateinit var auth: FirebaseAuth
 
     private val pickPhotoRequestCode = 2
 
     private var photoUri: Uri? = null
-
-
 
     companion object {
         //デバッグ時のコメント用
@@ -41,16 +38,16 @@ class MainActivity : AppCompatActivity() {
         //FirebaseAuthのインスタンスを取得
         auth = Firebase.auth
 
-        register_button_registerFragment.setOnClickListener {
+        register_button_register.setOnClickListener {
             performRegister()
         }
 
-        haveAccount_textView_registerFragment.setOnClickListener {
+        already_have_account_textView.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
-        selectPhoto_btn_registerFragment.setOnClickListener {
+        select_photo_button_register.setOnClickListener {
             //写真選択用のintentに遷移する
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -70,18 +67,18 @@ class MainActivity : AppCompatActivity() {
                 photoUri = it
                 //選択した写真をViewに表示
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
-                selectPhoto_imageView_registerFragment.setImageBitmap(bitmap)
+                select_photo_imageView_register.setImageBitmap(bitmap)
                 //写真選択ボタンを透明に
-                selectPhoto_btn_registerFragment.alpha = 0.0f
+                select_photo_button_register.alpha = 0.0f
             }
         }
     }
 
     //FirebaseAuthにてユーザーを作成する
     private fun performRegister(){
-        val userName = username_edittext_registerFragment.text.toString()
-        val email = email_edittext_registerFragment.text.toString()
-        val password = password_edittext_registerFragment.text.toString()
+        val userName = username_edittext_register.text.toString()
+        val email = email_edittext_register.text.toString()
+        val password = password_edittext_register.text.toString()
 
         Log.d(TAG, "Email is: $email")
         Log.d(TAG, "Password is: $password")
@@ -140,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         val ref = database.getReference("users/$uid")
 
         val user = User(uid
-                ?: "", username_edittext_registerFragment.text.toString(), userImageView)
+                ?: "", username_edittext_register.text.toString(), userImageView)
         ref.setValue(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "save user to Firebase is success")
