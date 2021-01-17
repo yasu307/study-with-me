@@ -20,6 +20,7 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    //master test
     private lateinit var auth: FirebaseAuth
 
     private val pickPhotoRequestCode = 2
