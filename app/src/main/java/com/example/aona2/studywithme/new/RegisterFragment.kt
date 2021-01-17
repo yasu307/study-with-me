@@ -2,6 +2,7 @@ package com.example.aona2.studywithme.new
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -9,25 +10,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.aona2.studywithme.R
 import androidx.fragment.app.activityViewModels
-import com.example.aona2.studywithme.Model.User
-import com.example.aona2.studywithme.View.LoginActivity
-import com.example.aona2.studywithme.View.MainActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_register_flagment.*
-import kotlinx.android.synthetic.main.fragment_register_flagment.haveAccount_textView_registerFragment
-import kotlinx.android.synthetic.main.fragment_register_flagment.register_button_registerFragment
-import kotlinx.android.synthetic.main.fragment_register_flagment.selectPhoto_btn_registerFragment
+import com.example.aona2.studywithme.new.UserSettingViewModel.Message
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
 class RegisterFragment : Fragment() {
     private val viewModel: UserSettingViewModel by activityViewModels()
 
-    private var testNum = 0
-
     private val pickPhotoRequestCode = 2
 
+    private var photoUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,15 +42,18 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_flagment, container, false)
+        return inflater.inflate(R.layout.fragment_register_flagment, container, false).also {
+            viewModel.message
+                .onEach { onMessage(it) }
+                .launchIn(lifecycleScope)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         register_button_registerFragment.setOnClickListener {
-//            performRegister()
+            performRegister()
         }
 
 //        haveAccount_textView_registerFragment.setOnClickListener {
@@ -73,10 +75,10 @@ class RegisterFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         //写真選択のintentから帰ってきたときの処理
         if (requestCode == pickPhotoRequestCode && resultCode == Activity.RESULT_OK) {
-            Log.d(MainActivity.TAG, "photo was selected")
+            Log.d("RegisterFragment", "photo was selected")
             data?.data?.let {
-//                //uploadImageToFirebase()にて使用するため変数に代入しておく
-//                photoUri = it
+                //uploadImageToFirebase()にて使用するため変数に代入しておく
+                photoUri = it
                 //選択した写真をViewに表示
                 val contentResolver = requireActivity().contentResolver
 
@@ -86,5 +88,32 @@ class RegisterFragment : Fragment() {
                 selectPhoto_btn_registerFragment.alpha = 0.0f
             }
         }
+    }
+
+    private fun performRegister(){
+        val userName = username_edittext_registerFragment.text.toString()
+        val email = email_edittext_registerFragment.text.toString()
+        val password = password_edittext_registerFragment.text.toString()
+
+        if (email.isEmpty() || password.isEmpty() || userName.isEmpty() || photoUri == null) {
+            Toast.makeText(requireActivity(), "入力内容を埋めてください", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        viewModel.register(email, password, userName, photoUri!!)
+    }
+
+    private fun onMessage(message: Message) {
+        when (message) {
+            is Message.Succeeded -> onMessageSucceeded()
+            is Message.Failed -> onMessageFailed()
+        }
+    }
+
+    private fun onMessageSucceeded(){
+        Log.d("RegisterFragment","on message succeeded")
+    }
+    private fun onMessageFailed(){
+        Log.d("RegisterFragment","on message failed")
     }
 }
