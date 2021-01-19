@@ -12,25 +12,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.*
 
 class UserSettingViewModel (application: Application) : AndroidViewModel(application){
-    private val repo  = UserRepository()
+    private val repo  = UserSettingRepository()
     var allUsers =  MutableLiveData<Map<String, User>>()
 
     val message: SharedFlow<Message>
     get() = _message
     private val _message = MutableSharedFlow<Message>()
 
-    init {
-        allUsers = repo.allUsers
-    }
-
     fun register(email: String, password: String, userName: String, photoUri: Uri) = viewModelScope.launch(Dispatchers.IO){
         val isSucceeded = repo.register(email, password, userName, photoUri)
         if(isSucceeded){
-            _message.emit(Message.Succeeded)
+            _message.emit(Message.RegisterSucceeded)
             Log.d("UserSettingViewModel","register is succeeded")
         }
         else{
-            _message.emit(Message.Failed)
+            _message.emit(Message.RegisterFailed)
             Log.d("UserSettingViewModel","register is failed")
         }
     }
@@ -48,8 +44,8 @@ class UserSettingViewModel (application: Application) : AndroidViewModel(applica
     }
 
     sealed class Message{
-        object Succeeded: Message()
-        object Failed: Message()
+        object RegisterSucceeded: Message()
+        object RegisterFailed: Message()
         object LoginSucceeded: Message()
         object LoginFailed: Message()
     }
