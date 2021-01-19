@@ -39,6 +39,7 @@ class RegisterFragment : Fragment() {
                 Log.d("RegisterFragment","all user is ${it.value.userName}")
             }
         })
+        viewModel.message.onEach { onMessage(it) }.launchIn(lifecycleScope)
     }
 
     override fun onCreateView(
@@ -46,11 +47,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_flagment, container, false).also {
-            viewModel.message
-                .onEach { onMessage(it) }
-                .launchIn(lifecycleScope)
-        }
+        return inflater.inflate(R.layout.fragment_register_flagment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,11 +110,13 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onMessageSucceeded(){
         Log.d("RegisterFragment","on message succeeded")
 //        val intent = Intent(activity, MainActivity::class.java)
 //        startActivity(intent)
     }
+    @Suppress("UNUSED_PARAMETER")
     private fun onMessageFailed(){
         Log.d("RegisterFragment","on message failed")
     }
