@@ -15,11 +15,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     private val pickPhotoRequestCode = 2
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_register)
 
         //FirebaseAuthのインスタンスを取得
         auth = Firebase.auth

@@ -6,17 +6,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import com.example.aona2.studywithme.R
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import kotlinx.android.synthetic.main.fragment_register_flagment.*
+import androidx.navigation.fragment.findNavController
+import com.example.aona2.studywithme.MainActivity
+import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.new.UserSettingViewModel.Message
+import kotlinx.android.synthetic.main.fragment_register_flagment.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -33,7 +36,7 @@ class RegisterFragment : Fragment() {
 
         viewModel.allUsers.observe(this, Observer { users ->
             users?.forEach{
-                Log.d("ThisIsTest","all user is ${it.value.userName}")
+                Log.d("RegisterFragment","all user is ${it.value.userName}")
             }
         })
     }
@@ -56,10 +59,10 @@ class RegisterFragment : Fragment() {
             performRegister()
         }
 
-//        haveAccount_textView_registerFragment.setOnClickListener {
-//            val intent = Intent(this, LoginActivity::class.java)
-//            startActivity(intent)
-//        }
+        haveAccount_textView_registerFragment.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
+
 
         selectPhoto_btn_registerFragment.setOnClickListener {
             //写真選択用のintentに遷移する
@@ -96,7 +99,7 @@ class RegisterFragment : Fragment() {
         val password = password_edittext_registerFragment.text.toString()
 
         if (email.isEmpty() || password.isEmpty() || userName.isEmpty() || photoUri == null) {
-            Toast.makeText(requireActivity(), "入力内容を埋めてください", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "入力内容を埋めてください", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -112,6 +115,8 @@ class RegisterFragment : Fragment() {
 
     private fun onMessageSucceeded(){
         Log.d("RegisterFragment","on message succeeded")
+//        val intent = Intent(activity, MainActivity::class.java)
+//        startActivity(intent)
     }
     private fun onMessageFailed(){
         Log.d("RegisterFragment","on message failed")

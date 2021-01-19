@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.CurrentStudyInfo
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
@@ -65,7 +64,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         when(item.itemId){
             R.id.menu_logout -> {
                 Firebase.auth.signOut()
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, RegisterActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
@@ -92,9 +91,9 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     private fun checkLogin(){
         val currentUser = Firebase.auth.currentUser
         if(currentUser == null){
-            Log.d(MainActivity.TAG,"user is not login")
+            Log.d(RegisterActivity.TAG,"user is not login")
             //HomeActivityへ遷移する
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, RegisterActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             return
