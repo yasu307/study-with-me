@@ -14,6 +14,7 @@ import com.google.firebase.ktx.Firebase
 class UserRepository {
     //Map<uid, user>
     val allUsers = MutableLiveData<Map<String, User>>()
+    var cashAllUsers = mapOf<String, User>()
 
     init{
         getAllUsers()
@@ -34,6 +35,7 @@ class UserRepository {
                     users[user.uid] = user
                 }
                 allUsers.value = users
+                cashAllUsers = users
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.d("UserRepository","on data cancelled")
@@ -43,7 +45,14 @@ class UserRepository {
 
     fun checkLogin(): Boolean{
         val currentUser = Firebase.auth.currentUser
-        if(currentUser != null) return true
+        if(currentUser != null){
+            Log.d("UserRepository","current user is ${currentUser.uid}")
+            return true
+        }
         return false
+    }
+
+    fun signOut(){
+        Firebase.auth.signOut()
     }
 }

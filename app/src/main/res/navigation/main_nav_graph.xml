@@ -9,5 +9,23 @@
         android:id="@+id/homeFragment"
         android:name="com.example.aona2.studywithme.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_taskNameInputFragment"
+            app:destination="@id/taskNameInputFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskNameInputFragment"
+        android:name="com.example.aona2.studywithme.TaskNameInputFragment"
+        android:label="fragment_task_name_input"
+        tools:layout="@layout/fragment_task_name_input" >
+        <action
+            android:id="@+id/action_taskNameInputFragment_to_studyFragment"
+            app:destination="@id/studyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/studyFragment"
+        android:name="com.example.aona2.studywithme.StudyFragment"
+        android:label="fragment_study"
+        tools:layout="@layout/fragment_study" />
 </navigation>
