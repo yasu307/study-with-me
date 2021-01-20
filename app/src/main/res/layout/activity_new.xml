@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".UserSettingActivity">
 
     <fragment
         android:id="@+id/nav_host_fragment"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        app:navGraph="@navigation/main_nav_graph"
+        app:navGraph="@navigation/user_setting_nav_graph"
         app:defaultNavHost="true" />
+
 </LinearLayout>
