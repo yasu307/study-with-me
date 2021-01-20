@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.aona2.studywithme.Model.CurrentStudyInfo
 import com.example.aona2.studywithme.Model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,7 +14,9 @@ import kotlinx.coroutines.launch
 class MainViewModel (application: Application) : AndroidViewModel(application){
     private val userRepo  = UserRepository()
     val allUsers =  userRepo.allUsers
+
     private val roomRepo = RoomRepository()
+    val allRooms = roomRepo.allRooms
 
     private val currentStudyInfoRepo = CurrentStudyInfoRepository()
     val currentStudyInfos = currentStudyInfoRepo.currentStudyInfos
