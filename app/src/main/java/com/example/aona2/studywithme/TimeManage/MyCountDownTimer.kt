@@ -1,6 +1,7 @@
 package com.example.aona2.studywithme.TimeManage
 
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -54,6 +55,7 @@ class MyCountDownTimer(
     override fun onFinish() {
         //次のタイマーをスタート
         studyActivity.startTimer()
+        Log.d("MyCountDownTimer","on finish")
     }
 }
 

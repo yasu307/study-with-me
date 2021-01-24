@@ -31,6 +31,9 @@ class StudyActivity : AppCompatActivity() {
     //ログで時間を表示するときのフォーマット
     private val simpleDateFormat = SimpleDateFormat("yyyy年MM月dd日 HH時mm分ss.SSS秒")
 
+    //ステータスを無理やり切り替えるためにフィールドにした
+    private lateinit var remainTime: Pair<Long, Boolean>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
@@ -53,6 +56,19 @@ class StudyActivity : AppCompatActivity() {
         makeInRoomUsersList()
 
         startTimer()
+
+        //ステータスを無理やり切り替えるためのボタン
+        nextMode_btn_studyActivity.setOnClickListener {
+            //最初のタイマー起動の場合はキャンセルしない
+            if(myCountDownTimer != null)  myCountDownTimer?.cancel()
+
+            //スタータスのみを反転させる
+            remainTime = Pair(remainTime.first, !remainTime.second)
+
+            //タイマーをセット、開始
+            myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
+            myCountDownTimer?.start()
+        }
     }
 
     //Firebaseから現在の勉強情報を取得する
@@ -89,7 +105,7 @@ class StudyActivity : AppCompatActivity() {
         if(myCountDownTimer != null)  myCountDownTimer?.cancel()
 
         //残り時間の計算
-        val remainTime = CalcRemainTime(startRoomAtMillis?:return).calcRemainTime()
+        remainTime = CalcRemainTime(startRoomAtMillis?:return).calcRemainTime()
 
         //タイマーをセット、開始
         myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
