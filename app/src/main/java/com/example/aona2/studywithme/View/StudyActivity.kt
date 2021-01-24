@@ -2,21 +2,26 @@ package com.example.aona2.studywithme.View
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.aona2.studywithme.Model.Room
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.TimeManage.CalcRemainTime
 import com.example.aona2.studywithme.TimeManage.MyCountDownTimer
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
-import java.util.*
+
 
 class StudyActivity : AppCompatActivity() {
     private var startRoomAtMillis: Long? = null
@@ -46,11 +51,11 @@ class StudyActivity : AppCompatActivity() {
 
         //recyclerviewの設定
         adapter = InRoomFriendListAdapter(this)
-        in_room_friend_recyclerview.adapter = adapter
-        in_room_friend_recyclerview.layoutManager = LinearLayoutManager(this)
+        inRoomFriend_recyclerView_studyActivity.adapter = adapter
+        inRoomFriend_recyclerView_studyActivity.layoutManager = LinearLayoutManager(this)
         //recyclerViewに枠線をつける
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        in_room_friend_recyclerview.addItemDecoration(itemDecoration)
+        inRoomFriend_recyclerView_studyActivity.addItemDecoration(itemDecoration)
 
         //ルームにいる人のリストを作成 adapterに適用する
         makeInRoomUsersList()
@@ -68,8 +73,22 @@ class StudyActivity : AppCompatActivity() {
             //タイマーをセット、開始
             myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
             myCountDownTimer?.start()
+            changeViewFromStatus()
         }
     }
+
+    private fun changeViewFromStatus(){
+        if(remainTime.second){ //勉強中
+            var params = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0, 1.0f)
+            inRoomFriend_recyclerView_studyActivity.layoutParams = params
+        }else{ //休憩中
+            var params = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0.0f)
+            inRoomFriend_recyclerView_studyActivity.layoutParams = params
+        }
+    }
+
 
     //Firebaseから現在の勉強情報を取得する
     //自動で更新するように変更
@@ -110,6 +129,7 @@ class StudyActivity : AppCompatActivity() {
         //タイマーをセット、開始
         myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
         myCountDownTimer?.start()
+        changeViewFromStatus()
     }
 
     override fun onDestroy() {
