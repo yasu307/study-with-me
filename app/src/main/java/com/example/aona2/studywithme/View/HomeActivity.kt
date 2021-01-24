@@ -63,7 +63,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.menu_logout -> {
+            R.id.menu_logout -> { //ログアウトメニュー
                 Firebase.auth.signOut()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
