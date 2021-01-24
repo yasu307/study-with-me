@@ -1,4 +1,4 @@
-package com.example.aona2.studywithme.new
+package com.example.aona2.studywithme.Model
 
 import android.net.Uri
 import android.util.Log
@@ -17,7 +17,9 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
+//RegisterとLogin時に使用する
 class UserSettingRepository {
+    //ログインする　ログイン成功したか？を返す
     suspend fun login(email: String, password: String): Boolean{
         var isSucceeded = false
         try{
@@ -29,15 +31,17 @@ class UserSettingRepository {
         return isSucceeded
     }
 
-    suspend fun register(email: String, password: String, userName: String, photoUri: Uri) :Boolean{
+    //ユーザー登録時の処理をそれぞれ順番に呼び出す 登録成功したか？を返す
+    suspend fun register(email: String, password: String, userName: String, imageUri: Uri) :Boolean{
         Firebase.auth.signOut()
 
         val uid = createUser(email, password) ?: return false
-        val imageReference = uploadUserImage(photoUri) ?: return false
+        val imageReference = uploadUserImage(imageUri) ?: return false
         val userImageUrl = getUserImageUrl(imageReference) ?: return false
         return saveUser(uid, userName, userImageUrl)
     }
 
+    //emailとpasswordからユーザーを作成する
     private suspend fun createUser(email: String, password: String): String?{
         var uid: String? = null
         Firebase.auth.signOut()
@@ -54,6 +58,7 @@ class UserSettingRepository {
         return uid
     }
 
+    //UserImageをFirebaseStorageに保存する
     private suspend fun uploadUserImage(imageUri: Uri) :StorageReference?{
         var imageRef: StorageReference? = null
         Log.d("UserRepository","upload image to firebase")
@@ -73,6 +78,7 @@ class UserSettingRepository {
         return imageRef
     }
 
+    //保存したUserImageを取得するUrlを取得する
     private suspend fun getUserImageUrl(imageRef: StorageReference) :String?{
         var userImageUrl: String? = null
         imageRef.downloadUrl.addOnSuccessListener {
@@ -81,6 +87,7 @@ class UserSettingRepository {
         return userImageUrl
     }
 
+    //RTDBにユーザーを保存する
     private suspend fun saveUser(uid: String, userName: String, userImageUrl: String): Boolean{
         var isSucceeded = false
         val ref = Firebase.database.getReference("users/$uid")
@@ -91,17 +98,5 @@ class UserSettingRepository {
                 isSucceeded = true
             }.await()
         return isSucceeded
-    }
-
-
-    fun insert(user: User){
-        val ref = Firebase.database.getReference("/users/${user.uid}")
-        ref.setValue(user)
-            .addOnSuccessListener {
-                Log.d("UserRepository", "set user value is success")
-            }
-            .addOnFailureListener {
-                Log.d("UserRepository", "set user value is failure")
-            }
     }
 }

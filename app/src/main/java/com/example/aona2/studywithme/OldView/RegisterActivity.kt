@@ -1,4 +1,4 @@
-package com.example.aona2.studywithme.View
+package com.example.aona2.studywithme.OldView
 
 import android.app.Activity
 import android.content.Intent

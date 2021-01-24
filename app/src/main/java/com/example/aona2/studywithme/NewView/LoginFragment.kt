@@ -1,4 +1,4 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.NewView
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,12 +11,12 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.example.aona2.studywithme.new.UserSettingViewModel
+import com.example.aona2.studywithme.NewViewModel.UserSettingViewModel
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import com.example.aona2.studywithme.new.UserSettingViewModel.Message
+import com.example.aona2.studywithme.NewViewModel.UserSettingViewModel.Message
+import com.example.aona2.studywithme.R
 
 class LoginFragment : Fragment() {
     private val viewModel: UserSettingViewModel by activityViewModels()
@@ -24,11 +24,13 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.allUsers.observe(this, Observer { users ->
-            users?.forEach{
-                Log.d("LoginFragment","all user is ${it.value.userName}")
-            }
-        })
+//        viewModel.allUsers.observe(this, Observer { users ->
+//            users?.forEach{
+//                Log.d("LoginFragment","all user is ${it.value.userName}")
+//            }
+//        })
+
+        //ViewModelから送られてくるmessageを監視する
         viewModel.message.onEach { onMessage(it) }.launchIn(lifecycleScope)
     }
 
@@ -41,14 +43,17 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //ログインボタンが押されたとき　
         login_btn_loginFragment.setOnClickListener {
             performLogin()
         }
 
+        //登録画面に戻る　が押されたとき　戻るボタンと同じ処理を追加する
 //        backToRegister__textView_loginFragment.setOnClickListener {
 //        }
     }
 
+    //ログイン処理
     private fun performLogin() {
         val email = email_editText_loginFragment.text.toString()
         val password = password_editText_loginFragment.text.toString()
@@ -57,6 +62,7 @@ class LoginFragment : Fragment() {
         Log.d("Login", "Password is: $password")
 
         //emailとpasswordが空だと、ユーザー作成で落ちるので事前に判別
+        //ViewModelに移したほうがよさそう
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(activity, "Please enter text in email/password", Toast.LENGTH_SHORT).show()
             return
@@ -65,7 +71,7 @@ class LoginFragment : Fragment() {
         viewModel.login(email, password)
     }
 
-
+    //ViewModelから送られてくるメッセージに対応する処理を呼び出す
     private fun onMessage(message: Message) {
         when (message) {
             is Message.LoginSucceeded -> onMessageSucceeded()
@@ -73,12 +79,15 @@ class LoginFragment : Fragment() {
         }
     }
 
+    //メッセージに対応する処理
+    //ログインが成功したとき　MainActivityに遷移
     @Suppress("UNUSED_PARAMETER")
     private fun onMessageSucceeded(){
         Log.d("LoginFragment","on message succeeded")
         val intent = Intent(activity, MainActivity::class.java)
         startActivity(intent)
     }
+    //ログインが失敗したとき　Toastを表示する処理を追加
     @Suppress("UNUSED_PARAMETER")
     private fun onMessageFailed(){
         Log.d("LoginFragment","on message failed")

@@ -1,7 +1,8 @@
-package com.example.aona2.studywithme
+package com.example.aona2.studywithme.NewView
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.aona2.studywithme.R
 
 class UserSettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

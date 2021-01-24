@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.aona2.studywithme.HomeFragment"
+        android:name="com.example.aona2.studywithme.NewView.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/taskNameInputFragment"
-        android:name="com.example.aona2.studywithme.TaskNameInputFragment"
+        android:name="com.example.aona2.studywithme.NewView.TaskNameInputFragment"
         android:label="fragment_task_name_input"
         tools:layout="@layout/fragment_task_name_input" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/studyFragment"
-        android:name="com.example.aona2.studywithme.StudyFragment"
+        android:name="com.example.aona2.studywithme.NewView.StudyFragment"
         android:label="fragment_study"
         tools:layout="@layout/fragment_study" />
 </navigation>

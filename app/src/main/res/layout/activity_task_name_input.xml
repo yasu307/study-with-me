@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.TaskNameInputActivity">
+    tools:context=".OldView.TaskNameInputActivity">
 
     <TextView
         android:id="@+id/please_input_task_name_textView"
