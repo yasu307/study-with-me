@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,7 +80,8 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
-    private fun changeSimpleRoomFriendView(){
+    //休憩中に表示されるユーザーアイコンの一覧を更新する
+    private fun refreshSimpleRoomFriendView(){
         simpleRoomFriend_linear_studyActivity.removeAllViews()
         inRoomUsersList.forEach { user->
             val circleImageView = de.hdodenhof.circleimageview.CircleImageView(this)
@@ -94,37 +96,39 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
+    //ステータスによって表示するViewを変える
+    //見えなくていいものは大きさを0にしている
     private fun changeViewFromStatus(){
         if(remainTime.second){ //勉強中
             //ユーザーの詳細表示
-            LinearLayout.LayoutParams(
+            ConstraintLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).let {
                 inRoomFriend_recyclerView_studyActivity.layoutParams = it
             }
             //ユーザーの簡易表示
-            LinearLayout.LayoutParams(
+            ConstraintLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
                 simpleRoomFriend_linear_studyActivity.layoutParams = it
-            }
-            LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
                 chat_recyclerView_studyActivity.layoutParams = it
+                messageInput_constraint_studyActivity.layoutParams = it
             }
         }else { //休憩中
             //ユーザーの詳細表示
-            LinearLayout.LayoutParams(
+            ConstraintLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
                 inRoomFriend_recyclerView_studyActivity.layoutParams = it
             }
             //ユーザーの簡易表示
-            LinearLayout.LayoutParams(
+            ConstraintLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).let {
                 simpleRoomFriend_linear_studyActivity.layoutParams = it
+                messageInput_constraint_studyActivity.layoutParams = it
             }
-            LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).let {
+            ConstraintLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
                 chat_recyclerView_studyActivity.layoutParams = it
             }
+
         }
     }
 
@@ -138,13 +142,13 @@ class StudyActivity : AppCompatActivity() {
                 val uid = snapshot.getValue()
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
-                changeSimpleRoomFriendView()
+                refreshSimpleRoomFriendView()
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val uid = snapshot.getValue()
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
-                changeSimpleRoomFriendView()
+                refreshSimpleRoomFriendView()
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -154,7 +158,7 @@ class StudyActivity : AppCompatActivity() {
                 val uid = snapshot.getValue()
                 inRoomUsersList.remove(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
-                changeSimpleRoomFriendView()
+                refreshSimpleRoomFriendView()
             }
         })
     }
@@ -209,6 +213,7 @@ class StudyActivity : AppCompatActivity() {
     }
 
     //dpをpxに置換
+    //refreshSimpleRoomFriendView()にて使用
     private fun convertDpToPx(dp: Int): Int {
         val d: Float = this.resources.displayMetrics.density
         return (dp * d + 0.5).toInt()
