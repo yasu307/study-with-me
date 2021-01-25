@@ -105,11 +105,13 @@ class StudyActivity : AppCompatActivity() {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
                 chatLog.add(chatMessage)
                 chatLogAdapter.setChatLog(chatLog)
+                chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
                 chatLog.add(chatMessage)
                 chatLogAdapter.setChatLog(chatLog)
+                chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
             }
@@ -117,6 +119,7 @@ class StudyActivity : AppCompatActivity() {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
                 chatLog.remove(chatMessage)
                 chatLogAdapter.setChatLog(chatLog)
+                chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -136,7 +139,6 @@ class StudyActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     Log.d("StudyActivity", "send message is succeeded")
                     messageInput_editText_studyActivity.text.clear()
-                    chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
                 }
     }
 

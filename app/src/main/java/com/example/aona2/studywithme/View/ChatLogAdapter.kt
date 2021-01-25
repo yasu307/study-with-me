@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aona2.studywithme.Model.ChatMessage
-import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,14 +19,12 @@ class ChatLogAdapter internal constructor(context: Context)
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    //ルームにいる人のリスト　StudyActivityから更新される
-    private var inRoomUsersList = mutableListOf<User>()
-
     private var chatLog = mutableListOf<ChatMessage>()
 
     private val VIEW_TYPE_FROM = 0
     private val VIEW_TYPE_TO = 1
 
+    private val uid = Firebase.auth.currentUser?.uid
 
     inner class ChatLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     }
@@ -45,30 +42,28 @@ class ChatLogAdapter internal constructor(context: Context)
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(position % 2 == 0){
-            return VIEW_TYPE_FROM
-        }
-        else{
-            return VIEW_TYPE_TO
-        }
+        if(chatLog[position].fromId == uid) return VIEW_TYPE_FROM
+        else return VIEW_TYPE_TO
     }
 
     override fun onBindViewHolder(holder: ChatLogViewHolder, position: Int) {
-        val uid = Firebase.auth.currentUser?.uid
-        val user = HomeActivity.users[uid]
-        if(position % 2 == 0){
+        val chatMessage = chatLog[position]
+        if (chatMessage.fromId == uid) {
+            val user = HomeActivity.users[uid]
             val iconFrom = holder.itemView.imageView_chatFromRow
             val messageFrom = holder.itemView.textView_chatFromRow
             Picasso.get().load(user?.userImageView).into(iconFrom)
-        }
-        else{
+            messageFrom.text = chatMessage.text
+        }else{
+            val user = HomeActivity.users[chatMessage.fromId]
             val iconTo = holder.itemView.imageView_chatToRow
             val messageTo = holder.itemView.textView_chatToRow
             Picasso.get().load(user?.userImageView).into(iconTo)
+            messageTo.text = chatMessage.text
         }
     }
 
-    override fun getItemCount(): Int = 100
+    override fun getItemCount(): Int = chatLog.size
 
     internal fun setChatLog(chatLog: MutableList<ChatMessage>){
         this.chatLog = chatLog
