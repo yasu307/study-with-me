@@ -1,10 +1,12 @@
 package com.example.aona2.studywithme.View
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.aona2.studywithme.Model.ChatMessage
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.google.firebase.auth.ktx.auth
@@ -19,7 +21,9 @@ class ChatLogAdapter internal constructor(context: Context)
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     //ルームにいる人のリスト　StudyActivityから更新される
-    private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
+    private var inRoomUsersList = mutableListOf<User>()
+
+    private var chatLog = mutableListOf<ChatMessage>()
 
     private val VIEW_TYPE_FROM = 0
     private val VIEW_TYPE_TO = 1
@@ -66,10 +70,12 @@ class ChatLogAdapter internal constructor(context: Context)
 
     override fun getItemCount(): Int = 100
 
-    //フィールドにルームにいるユーザーを保持　変更があれば自動で更新される
-    //StudyActivityから呼ばれる
-    internal fun setInRoomUsers(inRoomUsersList: MutableList<User>){
-        this.inRoomUsersList = inRoomUsersList
+    internal fun setChatLog(chatLog: MutableList<ChatMessage>){
+        this.chatLog = chatLog
+        chatLog.forEach {
+            Log.d("ChatLogAdapter", "chat from is ${it.fromId}")
+            Log.d("ChatLogAdapter", "chat message is ${it.text}")
+        }
         notifyDataSetChanged()
     }
 }

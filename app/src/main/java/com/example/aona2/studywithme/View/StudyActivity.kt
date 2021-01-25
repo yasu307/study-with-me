@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aona2.studywithme.Model.ChatMessage
 import com.example.aona2.studywithme.Model.Room
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
@@ -37,6 +38,8 @@ class StudyActivity : AppCompatActivity() {
     private var room: Room? = null
 
     private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
+
+    private var chatLog = mutableListOf<ChatMessage>()
 
     //ログで時間を表示するときのフォーマット
     private val simpleDateFormat = SimpleDateFormat("yyyy年MM月dd日 HH時mm分ss.SSS秒")
@@ -67,10 +70,16 @@ class StudyActivity : AppCompatActivity() {
         chat_recyclerView_studyActivity.adapter = chatLogAdapter
         chat_recyclerView_studyActivity.layoutManager = LinearLayoutManager(this)
 
+        startTimer()
+
         //ルームにいる人のリストを作成 adapterに適用する
         makeInRoomUsersList()
 
-        startTimer()
+        makeChatLog()
+
+        send_btn_studyActivity.setOnClickListener {
+            sendMessage()
+        }
 
         //ステータスを無理やり切り替えるためのボタン
         nextMode_btn_studyActivity.setOnClickListener {
@@ -86,6 +95,51 @@ class StudyActivity : AppCompatActivity() {
             changeViewFromStatus()
         }
     }
+
+    private fun makeChatLog(){
+        val roomId = room?.roomId ?: return
+        val ref = Firebase.database.getReference("/messages/$roomId")
+
+        ref.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                chatLog.add(chatMessage)
+                chatLogAdapter.setChatLog(chatLog)
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                chatLog.add(chatMessage)
+                chatLogAdapter.setChatLog(chatLog)
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                chatLog.remove(chatMessage)
+                chatLogAdapter.setChatLog(chatLog)
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    private fun sendMessage(){
+        val uid = Firebase.auth.currentUser?.uid ?: return
+        val roomId = room?.roomId ?: return
+        val message = messageInput_editText_studyActivity.text.toString()
+
+        val ref = Firebase.database.getReference("/messages/$roomId").push()
+        if(ref.key == null) return
+        val chatMessage = ChatMessage(ref.key!!, message, roomId, uid, System.currentTimeMillis())
+
+        ref.setValue(chatMessage)
+                .addOnSuccessListener {
+                    Log.d("StudyActivity", "send message is succeeded")
+                    messageInput_editText_studyActivity.text.clear()
+                    chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
+                }
+    }
+
 
     //休憩中に表示されるユーザーアイコンの一覧を更新する
     private fun refreshSimpleRoomFriendView(){
@@ -132,13 +186,13 @@ class StudyActivity : AppCompatActivity() {
         val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/in_room_users")
         inRoomUsersRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val uid = snapshot.getValue()
+                val uid = snapshot.value
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
                 refreshSimpleRoomFriendView()
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                val uid = snapshot.getValue()
+                val uid = snapshot.value
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
                 refreshSimpleRoomFriendView()
@@ -148,7 +202,7 @@ class StudyActivity : AppCompatActivity() {
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
             }
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                val uid = snapshot.getValue()
+                val uid = snapshot.value
                 inRoomUsersList.remove(HomeActivity.users[uid] as User)
                 inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
                 refreshSimpleRoomFriendView()
