@@ -2,6 +2,7 @@ package com.example.aona2.studywithme.View
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -99,36 +100,22 @@ class StudyActivity : AppCompatActivity() {
     //ステータスによって表示するViewを変える
     //見えなくていいものは大きさを0にしている
     private fun changeViewFromStatus(){
-        if(remainTime.second){ //勉強中
+        if (remainTime.second) { //勉強中
             //ユーザーの詳細表示
-            ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).let {
-                inRoomFriend_recyclerView_studyActivity.layoutParams = it
-            }
-            //ユーザーの簡易表示
-            ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
-                simpleRoomFriend_linear_studyActivity.layoutParams = it
-                chat_recyclerView_studyActivity.layoutParams = it
-                messageInput_constraint_studyActivity.layoutParams = it
-            }
-        }else { //休憩中
-            //ユーザーの詳細表示
-            ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
-                inRoomFriend_recyclerView_studyActivity.layoutParams = it
-            }
-            //ユーザーの簡易表示
-            ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).let {
-                simpleRoomFriend_linear_studyActivity.layoutParams = it
-                messageInput_constraint_studyActivity.layoutParams = it
-            }
-            ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
-                chat_recyclerView_studyActivity.layoutParams = it
-            }
+            inRoomFriend_recyclerView_studyActivity.visibility = View.VISIBLE
 
+            //ユーザーの簡易表示
+            simpleRoomFriend_linear_studyActivity.visibility = View.GONE
+            chat_recyclerView_studyActivity.visibility = View.GONE
+            messageInput_constraint_studyActivity.visibility = View.GONE
+
+        } else { //休憩中
+            //ユーザーの詳細表示
+            inRoomFriend_recyclerView_studyActivity.visibility = View.GONE
+            //ユーザーの簡易表示
+            simpleRoomFriend_linear_studyActivity.visibility = View.VISIBLE
+            messageInput_constraint_studyActivity.visibility = View.VISIBLE
+            chat_recyclerView_studyActivity.visibility = View.VISIBLE
         }
     }
 

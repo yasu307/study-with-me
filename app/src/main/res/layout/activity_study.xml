@@ -2,33 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/message_editText_studyActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/defaultBackground"
     android:orientation="vertical"
-    tools:context=".View.StudyActivity">
+    tools:context=".View.StudyActivity" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/showRemainTime_constraint_studyActivity"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            android:id="@+id/remain_time_progressBar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:progressDrawable="@drawable/thick_progress"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/remain_time_textView" />
 
         <TextView
             android:id="@+id/remain_time_textView"
@@ -43,6 +29,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ProgressBar
+            android:id="@+id/remain_time_progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:progressDrawable="@drawable/thick_progress"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remain_time_textView" />
+
         <Button
             android:id="@+id/nextMode_btn_studyActivity"
             android:layout_width="wrap_content"
@@ -51,43 +53,40 @@
             android:text="Button"
             app:layout_constraintStart_toEndOf="@+id/remain_time_textView"
             app:layout_constraintTop_toTopOf="@+id/remain_time_textView" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inRoomFriend_recyclerView_studyActivity"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showRemainTime_constraint_studyActivity" />
 
     <LinearLayout
         android:id="@+id/simpleRoomFriend_linear_studyActivity"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inRoomFriend_recyclerView_studyActivity" />
+        app:layout_constraintTop_toBottomOf="@+id/showRemainTime_constraint_studyActivity"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_recyclerView_studyActivity"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
         android:background="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/messageInput_constraint_studyActivity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/simpleRoomFriend_linear_studyActivity">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/simpleRoomFriend_linear_studyActivity" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/messageInput_constraint_studyActivity"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,8 +94,11 @@
 
         <EditText
             android:id="@+id/messageInput_editText_studyActivity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:ems="10"
             android:hint="メッセージを入力"
             android:inputType="textPersonName"
@@ -107,11 +109,12 @@
         <Button
             android:id="@+id/send_btn_studyActivity"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="送信"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
