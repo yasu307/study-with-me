@@ -31,7 +31,8 @@ class StudyActivity : AppCompatActivity() {
     private var startRoomAtMillis: Long? = null
     private var myCountDownTimer: MyCountDownTimer? = null
 
-    private lateinit var adapter: InRoomFriendListAdapter
+    private lateinit var inRoomFriendListAdapter: InRoomFriendListAdapter
+    private lateinit var chatLogAdapter: ChatLogAdapter
 
     private var room: Room? = null
 
@@ -54,12 +55,17 @@ class StudyActivity : AppCompatActivity() {
         Log.d("StudyActivity", "start room at  ${simpleDateFormat.format(startRoomAtMillis)}")
 
         //recyclerviewの設定
-        adapter = InRoomFriendListAdapter(this)
-        inRoomFriend_recyclerView_studyActivity.adapter = adapter
+        inRoomFriendListAdapter = InRoomFriendListAdapter(this)
+        inRoomFriend_recyclerView_studyActivity.adapter = inRoomFriendListAdapter
         inRoomFriend_recyclerView_studyActivity.layoutManager = LinearLayoutManager(this)
         //recyclerViewに枠線をつける
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         inRoomFriend_recyclerView_studyActivity.addItemDecoration(itemDecoration)
+
+        //recyclerviewの設定
+        chatLogAdapter = ChatLogAdapter(this)
+        chat_recyclerView_studyActivity.adapter = chatLogAdapter
+        chat_recyclerView_studyActivity.layoutManager = LinearLayoutManager(this)
 
         //ルームにいる人のリストを作成 adapterに適用する
         makeInRoomUsersList()
@@ -128,13 +134,13 @@ class StudyActivity : AppCompatActivity() {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val uid = snapshot.getValue()
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
-                adapter.setInRoomUsers(inRoomUsersList)
+                inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
                 refreshSimpleRoomFriendView()
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val uid = snapshot.getValue()
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
-                adapter.setInRoomUsers(inRoomUsersList)
+                inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
                 refreshSimpleRoomFriendView()
             }
             override fun onCancelled(error: DatabaseError) {
@@ -144,7 +150,7 @@ class StudyActivity : AppCompatActivity() {
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 val uid = snapshot.getValue()
                 inRoomUsersList.remove(HomeActivity.users[uid] as User)
-                adapter.setInRoomUsers(inRoomUsersList)
+                inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
                 refreshSimpleRoomFriendView()
             }
         })
