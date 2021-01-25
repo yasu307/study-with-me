@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.setMargins
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.Room
@@ -79,10 +80,12 @@ class StudyActivity : AppCompatActivity() {
     }
 
     private fun changeSimpleRoomFriendView(){
+        simpleRoomFriend_linear_studyActivity.removeAllViews()
         inRoomUsersList.forEach { user->
             val circleImageView = de.hdodenhof.circleimageview.CircleImageView(this)
             LinearLayout.LayoutParams(
                     convertDpToPx(60), convertDpToPx(60)).let {
+                it.setMargins(convertDpToPx(5))
                 circleImageView.layoutParams = it
             }
             circleImageView.borderWidth = convertDpToPx(2)
