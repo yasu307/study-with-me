@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.chat_from_row.view.*
 import kotlinx.android.synthetic.main.chat_to_row.view.*
 
+//休憩中に表示されるチャットログのrecyclerViewに適用されるadapter
 class ChatLogAdapter internal constructor(context: Context)
     : RecyclerView.Adapter<ChatLogAdapter.ChatLogViewHolder>(){
 
@@ -21,14 +22,18 @@ class ChatLogAdapter internal constructor(context: Context)
 
     private var chatLog = mutableListOf<ChatMessage>()
 
+    //viewTypeとして使用
+    //自分が送信したitemに対してはFROM、自分以外はTO
     private val VIEW_TYPE_FROM = 0
     private val VIEW_TYPE_TO = 1
 
+    //自分のuid
     private val uid = Firebase.auth.currentUser?.uid
 
     inner class ChatLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     }
 
+    //ViewTypeに対応したレイアウトを返す
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatLogAdapter.ChatLogViewHolder {
         val itemView = when(viewType){
             VIEW_TYPE_FROM ->
@@ -41,6 +46,8 @@ class ChatLogAdapter internal constructor(context: Context)
         return ChatLogViewHolder(itemView)
     }
 
+    //chatMessageに対応したViewTypeを返す
+    //自分が送信したitemに対してはFROM、自分以外はTO
     override fun getItemViewType(position: Int): Int {
         if(chatLog[position].fromId == uid) return VIEW_TYPE_FROM
         else return VIEW_TYPE_TO
@@ -48,13 +55,13 @@ class ChatLogAdapter internal constructor(context: Context)
 
     override fun onBindViewHolder(holder: ChatLogViewHolder, position: Int) {
         val chatMessage = chatLog[position]
-        if (chatMessage.fromId == uid) {
+        if (chatMessage.fromId == uid) { //自分が送信したchatMessage
             val user = HomeActivity.users[uid]
             val iconFrom = holder.itemView.imageView_chatFromRow
             val messageFrom = holder.itemView.textView_chatFromRow
             Picasso.get().load(user?.userImageView).into(iconFrom)
             messageFrom.text = chatMessage.text
-        }else{
+        }else{ //自分以外が送信したchatMessage
             val user = HomeActivity.users[chatMessage.fromId]
             val iconTo = holder.itemView.imageView_chatToRow
             val messageTo = holder.itemView.textView_chatToRow
@@ -65,12 +72,14 @@ class ChatLogAdapter internal constructor(context: Context)
 
     override fun getItemCount(): Int = chatLog.size
 
+    //フィールドにchatLogを保持　変更があれば自動で更新される
+    //StudyActivityから呼ばれる
     internal fun setChatLog(chatLog: MutableList<ChatMessage>){
         this.chatLog = chatLog
-        chatLog.forEach {
-            Log.d("ChatLogAdapter", "chat from is ${it.fromId}")
-            Log.d("ChatLogAdapter", "chat message is ${it.text}")
-        }
+//        chatLog.forEach {
+//            Log.d("ChatLogAdapter", "chat from is ${it.fromId}")
+//            Log.d("ChatLogAdapter", "chat message is ${it.text}")
+//        }
         notifyDataSetChanged()
     }
 }

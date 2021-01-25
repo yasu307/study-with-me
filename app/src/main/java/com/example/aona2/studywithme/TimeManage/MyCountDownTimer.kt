@@ -31,10 +31,12 @@ class MyCountDownTimer(
         //constraintLayoutの背景色をモードによって変更
         if(isStudying){
             timerProgressBar.max = study_max
+//            //色変更を一時停止
 //            studyActivity.showRemainTime_constraint_studyActivity.setBackgroundColor(ContextCompat.getColor(studyActivity, R.color.study))
         }
         else{
             timerProgressBar.max = breaktime_max
+//            //色変更を一時停止
 //            studyActivity.showRemainTime_constraint_studyActivity.setBackgroundColor(ContextCompat.getColor(studyActivity, R.color.breakTime))
         }
         //プログレスバー反転　表示が減っていくように

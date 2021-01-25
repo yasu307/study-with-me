@@ -75,8 +75,10 @@ class StudyActivity : AppCompatActivity() {
         //ルームにいる人のリストを作成 adapterに適用する
         makeInRoomUsersList()
 
+        //ルーム内のチャットログを取得
         makeChatLog()
 
+        //送信ボタンが押されたとき
         send_btn_studyActivity.setOnClickListener {
             sendMessage()
         }
@@ -96,6 +98,7 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
+    //ルーム内のチャットログを取得
     private fun makeChatLog(){
         val roomId = room?.roomId ?: return
         val ref = Firebase.database.getReference("/messages/$roomId")
@@ -126,6 +129,7 @@ class StudyActivity : AppCompatActivity() {
         })
     }
 
+    //入力されているメッセージを送信する
     private fun sendMessage(){
         val uid = Firebase.auth.currentUser?.uid ?: return
         val roomId = room?.roomId ?: return
@@ -138,6 +142,7 @@ class StudyActivity : AppCompatActivity() {
         ref.setValue(chatMessage)
                 .addOnSuccessListener {
                     Log.d("StudyActivity", "send message is succeeded")
+                    //送信が成功したら入力されたテキストをクリア
                     messageInput_editText_studyActivity.text.clear()
                 }
     }
