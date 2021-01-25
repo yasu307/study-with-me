@@ -134,6 +134,9 @@ class StudyActivity : AppCompatActivity() {
         val uid = Firebase.auth.currentUser?.uid ?: return
         val roomId = room?.roomId ?: return
         val message = messageInput_editText_studyActivity.text.toString()
+        if(message.isEmpty()) return
+        //メッセージを取得したらeditTextをクリア
+        messageInput_editText_studyActivity.text.clear()
 
         val ref = Firebase.database.getReference("/messages/$roomId").push()
         if(ref.key == null) return
@@ -142,8 +145,6 @@ class StudyActivity : AppCompatActivity() {
         ref.setValue(chatMessage)
                 .addOnSuccessListener {
                     Log.d("StudyActivity", "send message is succeeded")
-                    //送信が成功したら入力されたテキストをクリア
-                    messageInput_editText_studyActivity.text.clear()
                 }
     }
 
