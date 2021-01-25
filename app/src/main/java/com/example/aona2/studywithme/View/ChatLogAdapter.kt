@@ -17,12 +17,32 @@ class ChatLogAdapter internal constructor(context: Context)
     //ルームにいる人のリスト　StudyActivityから更新される
     private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
 
+    private val VIEW_TYPE_FROM = 0
+    private val VIEW_TYPE_TO = 1
+
+
     inner class ChatLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatLogAdapter.ChatLogViewHolder {
-        val itemView = inflater.inflate(R.layout.chat_to_row, parent, false)
+        val itemView = when(viewType){
+            VIEW_TYPE_FROM ->
+                inflater.inflate(R.layout.chat_from_row, parent, false)
+            VIEW_TYPE_TO ->
+                inflater.inflate(R.layout.chat_to_row, parent, false)
+            else ->
+                inflater.inflate(R.layout.chat_from_row, parent, false)
+        }
         return ChatLogViewHolder(itemView)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if(position % 2 == 0){
+            return VIEW_TYPE_FROM
+        }
+        else{
+            return VIEW_TYPE_TO
+        }
     }
 
     override fun onBindViewHolder(holder: ChatLogViewHolder, position: Int) {
