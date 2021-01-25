@@ -24,6 +24,7 @@ class InRoomFriendListAdapter internal constructor(context: Context)
         val userIcon = itemView.user_icon_in_room
         val userName = itemView.user_name_in_room
         val taskName = itemView.task_name_in_room
+        val taskStatusIcon = itemView.taskStatusIcon_inRoom
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InRoomFriendViewHolder {
@@ -35,6 +36,7 @@ class InRoomFriendListAdapter internal constructor(context: Context)
         val user = inRoomUsersList[position]
         Picasso.get().load(user.userImageView).into(holder.userIcon)
         holder.userName.text = user.userName
+        holder.taskName.text = HomeActivity.currentStudyInfos[user.uid]?.taskName
     }
 
     override fun getItemCount(): Int = inRoomUsersList.size

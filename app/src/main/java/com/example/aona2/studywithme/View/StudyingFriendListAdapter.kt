@@ -19,7 +19,9 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     //現在の勉強情報　HomeActivityから更新される
-    private var currentStudyInfos = mutableListOf<CurrentStudyInfo>()
+    private var currentStudyInfos = mutableMapOf<String, CurrentStudyInfo>()
+
+    private var currentStudyInfosList = emptyList<Pair<String, CurrentStudyInfo>>()
 
     private val clickListener: Listener = listener
 
@@ -37,7 +39,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
     }
 
     override fun onBindViewHolder(holder: StudyingFriendViewHolder, position: Int) {
-        val currentStudyInfo = currentStudyInfos[position]
+        val currentStudyInfo = currentStudyInfosList[position].second
         //タスク名を入力
         holder.taskName.text = currentStudyInfo.taskName
 
@@ -65,8 +67,9 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
 
     //フィールドに現在の勉強情報を保持　変更があれば自動で更新する(まだされない)
     //HomeActivityから呼ばれる
-    internal fun setCurrentStudyInfos(currentStudyInfos: MutableList<CurrentStudyInfo>){
+    internal fun setCurrentStudyInfos(currentStudyInfos: MutableMap<String, CurrentStudyInfo>){
         this.currentStudyInfos = currentStudyInfos
+        currentStudyInfosList = currentStudyInfos.toList()
         notifyDataSetChanged()
     }
 

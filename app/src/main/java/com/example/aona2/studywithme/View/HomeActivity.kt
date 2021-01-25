@@ -21,12 +21,11 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     //ユーザー情報を保持しておく　他アクティビティから使用される
     companion object{
-        var users: MutableMap<String, User> = mutableMapOf<String, User>()
+        var users = mutableMapOf<String, User>()
+        var currentStudyInfos = mutableMapOf<String, CurrentStudyInfo>()
     }
 
     private lateinit var adapter: StudyingFriendListAdapter
-
-    private var currentStudyInfos: MutableList<CurrentStudyInfo> = mutableListOf<CurrentStudyInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,21 +106,24 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         val currentStudyInfosRef = FirebaseDatabase.getInstance().getReference("/CurrentStudyInfos")
         currentStudyInfosRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("HomeActivity", "fetch current study infos")
                 val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
-                if (currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
+                if (currentStudyInfo != null) currentStudyInfos[currentStudyInfo.uid] = currentStudyInfo
                 adapter.setCurrentStudyInfos(currentStudyInfos)
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.d("HomeActivity", "fetch current study infos")
                 val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
-                if (currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
+                if (currentStudyInfo != null) currentStudyInfos[currentStudyInfo.uid] = currentStudyInfo
                 adapter.setCurrentStudyInfos(currentStudyInfos)
             }
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
 
             }
             override fun onChildRemoved(snapshot: DataSnapshot) {
+                Log.d("HomeActivity", "fetch current study infos")
                 val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
-                if (currentStudyInfo != null) currentStudyInfos.remove(currentStudyInfo)
+                if (currentStudyInfo != null) currentStudyInfos.remove(currentStudyInfo.uid)
                 adapter.setCurrentStudyInfos(currentStudyInfos)
             }
             override fun onCancelled(error: DatabaseError) {

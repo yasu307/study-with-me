@@ -78,8 +78,8 @@
 
     <ImageView
         android:id="@+id/task_status_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/user_icon"
         app:layout_constraintEnd_toStartOf="@+id/remain_time"

@@ -47,4 +47,14 @@
         app:layout_constraintTop_toTopOf="@+id/user_icon_in_room"
         app:layout_constraintVertical_bias="0.9" />
 
+    <ImageView
+        android:id="@+id/taskStatusIcon_inRoom"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/study_status" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
