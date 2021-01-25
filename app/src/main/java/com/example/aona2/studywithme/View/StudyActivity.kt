@@ -3,11 +3,11 @@ package com.example.aona2.studywithme.View
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.aona2.studywithme.Model.Room
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
 
@@ -77,18 +78,52 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
-    private fun changeViewFromStatus(){
-        if(remainTime.second){ //勉強中
-            var params = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 0, 1.0f)
-            inRoomFriend_recyclerView_studyActivity.layoutParams = params
-        }else{ //休憩中
-            var params = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, 0, 0.0f)
-            inRoomFriend_recyclerView_studyActivity.layoutParams = params
+    private fun changeSimpleRoomFriendView(){
+        inRoomUsersList.forEach { user->
+            val circleImageView = de.hdodenhof.circleimageview.CircleImageView(this)
+            LinearLayout.LayoutParams(
+                    convertDpToPx(60), convertDpToPx(60)).let {
+                circleImageView.layoutParams = it
+            }
+            circleImageView.borderWidth = convertDpToPx(2)
+            Picasso.get().load(user.userImageView).into(circleImageView)
+            simpleRoomFriend_linear_studyActivity.addView(circleImageView)
         }
     }
 
+    private fun changeViewFromStatus(){
+        if(remainTime.second){ //勉強中
+            //ユーザーの詳細表示
+            LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).let {
+                inRoomFriend_recyclerView_studyActivity.layoutParams = it
+            }
+            //ユーザーの簡易表示
+            LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
+                simpleRoomFriend_linear_studyActivity.layoutParams = it
+            }
+            LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
+                chat_recyclerView_studyActivity.layoutParams = it
+            }
+        }else { //休憩中
+            //ユーザーの詳細表示
+            LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, 0).let {
+                inRoomFriend_recyclerView_studyActivity.layoutParams = it
+            }
+            //ユーザーの簡易表示
+            LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).let {
+                simpleRoomFriend_linear_studyActivity.layoutParams = it
+            }
+            LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).let {
+                chat_recyclerView_studyActivity.layoutParams = it
+            }
+        }
+    }
 
     //Firebaseから現在の勉強情報を取得する
     //自動で更新するように変更
@@ -100,11 +135,13 @@ class StudyActivity : AppCompatActivity() {
                 val uid = snapshot.getValue()
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
+                changeSimpleRoomFriendView()
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val uid = snapshot.getValue()
                 inRoomUsersList.add(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
+                changeSimpleRoomFriendView()
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -114,6 +151,7 @@ class StudyActivity : AppCompatActivity() {
                 val uid = snapshot.getValue()
                 inRoomUsersList.remove(HomeActivity.users[uid] as User)
                 adapter.setInRoomUsers(inRoomUsersList)
+                changeSimpleRoomFriendView()
             }
         })
     }
@@ -165,5 +203,11 @@ class StudyActivity : AppCompatActivity() {
         }.addOnFailureListener {
             Log.d("StudyActivity","delete my current study info is failure")
         }
+    }
+
+    //dpをpxに置換
+    private fun convertDpToPx(dp: Int): Int {
+        val d: Float = this.resources.displayMetrics.density
+        return (dp * d + 0.5).toInt()
     }
 }
