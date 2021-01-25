@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.chat_from_row.view.*
+import kotlinx.android.synthetic.main.chat_to_row.view.*
 
 class ChatLogAdapter internal constructor(context: Context)
     : RecyclerView.Adapter<ChatLogAdapter.ChatLogViewHolder>(){
@@ -21,7 +25,18 @@ class ChatLogAdapter internal constructor(context: Context)
     private val VIEW_TYPE_TO = 1
 
 
-    inner class ChatLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class ChatLogViewHolder(itemView: View, viewType: Int) : RecyclerView.ViewHolder(itemView){
+//        when(viewType){
+//            VIEW_TYPE_FROM -> {
+//                val iconFrom = itemView.imageView_chatFromRow
+//                val messageFrom = itemView.textView_chatFromRow
+//            }
+//            VIEW_TYPE_TO -> {
+//                val iconTo = itemView.imageView_chatToRow
+//                val messageTo = itemView.textView_chatToRow
+//            }
+//            else ->
+//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatLogAdapter.ChatLogViewHolder {
@@ -33,7 +48,7 @@ class ChatLogAdapter internal constructor(context: Context)
             else ->
                 inflater.inflate(R.layout.chat_from_row, parent, false)
         }
-        return ChatLogViewHolder(itemView)
+        return ChatLogViewHolder(itemView, viewType)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -46,6 +61,18 @@ class ChatLogAdapter internal constructor(context: Context)
     }
 
     override fun onBindViewHolder(holder: ChatLogViewHolder, position: Int) {
+        val uid = Firebase.auth.currentUser?.uid
+        val user = HomeActivity.users[uid]
+        if(position % 2 == 0){
+            val iconFrom = holder.itemView.imageView_chatFromRow
+            val messageFrom = holder.itemView.textView_chatFromRow
+            Picasso.get().load(user?.userImageView).into(iconFrom)
+        }
+        else{
+            val iconTo = holder.itemView.imageView_chatToRow
+            val messageTo = holder.itemView.textView_chatToRow
+            Picasso.get().load(user?.userImageView).into(iconTo)
+        }
     }
 
     override fun getItemCount(): Int = 100
