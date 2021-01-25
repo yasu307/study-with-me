@@ -25,18 +25,7 @@ class ChatLogAdapter internal constructor(context: Context)
     private val VIEW_TYPE_TO = 1
 
 
-    inner class ChatLogViewHolder(itemView: View, viewType: Int) : RecyclerView.ViewHolder(itemView){
-//        when(viewType){
-//            VIEW_TYPE_FROM -> {
-//                val iconFrom = itemView.imageView_chatFromRow
-//                val messageFrom = itemView.textView_chatFromRow
-//            }
-//            VIEW_TYPE_TO -> {
-//                val iconTo = itemView.imageView_chatToRow
-//                val messageTo = itemView.textView_chatToRow
-//            }
-//            else ->
-//        }
+    inner class ChatLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatLogAdapter.ChatLogViewHolder {
@@ -48,7 +37,7 @@ class ChatLogAdapter internal constructor(context: Context)
             else ->
                 inflater.inflate(R.layout.chat_from_row, parent, false)
         }
-        return ChatLogViewHolder(itemView, viewType)
+        return ChatLogViewHolder(itemView)
     }
 
     override fun getItemViewType(position: Int): Int {
