@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.aona2.studywithme.Model.CurrentStudyInfo
+import com.example.aona2.studywithme.Model.Room
+import com.example.aona2.studywithme.Model.StudyInfo
 import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.TimeManage.CalcRemainTime
 import com.squareup.picasso.Picasso
@@ -19,10 +21,8 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    //現在の勉強情報　HomeActivityから更新される
-    private var currentStudyInfos = mutableMapOf<String, CurrentStudyInfo>()
-
-    private var currentStudyInfosList = emptyList<Pair<String, CurrentStudyInfo>>()
+    //すべての勉強情報　HomeActivityから更新される
+    private var allStudyInfos = mutableListOf<StudyInfo>()
 
     private val clickListener: Listener = listener
 
@@ -40,20 +40,19 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
     }
 
     override fun onBindViewHolder(holder: StudyingFriendViewHolder, position: Int) {
-        val currentStudyInfo = currentStudyInfosList[position].second
+        val studyInfo = allStudyInfos[position]
         //タスク名を入力
-        holder.taskName.text = currentStudyInfo.taskName
+        holder.taskName.text = studyInfo.taskName
 
         //HomeActivityのusersを使用する
-        val user = HomeActivity.users[currentStudyInfo.uid]
-        if(user == null) return
+        val user = HomeActivity.users[studyInfo.uid] ?: return
 
         //ユーザーアイコンとユーザー名を入力
-        Picasso.get().load(user!!.userImageView).into(holder.userIcon)
-        holder.userName.text = user!!.userName
+        Picasso.get().load(user.userImageView).into(holder.userIcon)
+        holder.userName.text = user.userName
 
         //残り時間を計算
-        val remainTime = CalcRemainTime(currentStudyInfo.roomStartAt).calcRemainTime()
+        val remainTime = CalcRemainTime(studyInfo.roomStartAt).calcRemainTime()
         //勉強中か？のステータスアイコンを出す
         if (remainTime.second) Glide.with(context).load(R.drawable.edit_animation).into(holder.taskStatusIcon);
         else holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
@@ -62,22 +61,27 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
 
         //クリックされたら、ポジションと勉強情報をHomeActivityに送信
         holder.itemView.setOnClickListener {
-            clickListener.onItemClicked(holder.adapterPosition, currentStudyInfo)
+            clickListener.onItemClicked(holder.adapterPosition, studyInfo.roomId)
         }
     }
 
     //フィールドに現在の勉強情報を保持　変更があれば自動で更新する(まだされない)
     //HomeActivityから呼ばれる
-    internal fun setCurrentStudyInfos(currentStudyInfos: MutableMap<String, CurrentStudyInfo>){
-        this.currentStudyInfos = currentStudyInfos
-        currentStudyInfosList = currentStudyInfos.toList()
+    internal fun setRooms(rooms: MutableMap<String, Room>){
+        val tmpStudyInfos = mutableListOf<StudyInfo>()
+        rooms.forEach { roomMap ->
+            roomMap.value.inRoomsUsers.forEach { studyInfoMap ->
+                tmpStudyInfos.add(studyInfoMap.value)
+            }
+        }
+        allStudyInfos = tmpStudyInfos
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = currentStudyInfos.size
+    override fun getItemCount() = allStudyInfos.size
 
     //itemがクリックされたか
     interface Listener{
-        fun onItemClicked(index: Int, currentStudyInfo: CurrentStudyInfo)
+        fun onItemClicked(index: Int, friendRoomId: String)
     }
 }

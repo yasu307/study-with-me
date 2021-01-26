@@ -37,7 +37,7 @@ class InRoomFriendListAdapter internal constructor(val context: Context)
         val user = inRoomUsersList[position]
         Picasso.get().load(user.userImageView).into(holder.userIcon)
         holder.userName.text = user.userName
-        holder.taskName.text = HomeActivity.currentStudyInfos[user.uid]?.taskName
+//        holder.taskName.text = HomeActivity.currentStudyInfos[user.uid]?.taskName
         Glide.with(context).load(R.drawable.edit_animation).into(holder.taskStatusIcon);
     }
 
