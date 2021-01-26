@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.aona2.studywithme.Model.StudyInfo
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.squareup.picasso.Picasso
@@ -18,8 +19,8 @@ class InRoomFriendListAdapter internal constructor(val context: Context)
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    //ルームにいる人のリスト　StudyActivityから更新される
-    private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
+    //ルームにいる人の勉強情報　StudyActivityから更新される
+    private var studyInfoList = mutableListOf<StudyInfo>()
 
     inner class InRoomFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val userIcon = itemView.user_icon_in_room
@@ -34,19 +35,20 @@ class InRoomFriendListAdapter internal constructor(val context: Context)
     }
 
     override fun onBindViewHolder(holder: InRoomFriendViewHolder, position: Int) {
-        val user = inRoomUsersList[position]
+        val studyInfo = studyInfoList[position]
+        val user = HomeActivity.users[studyInfo.uid] ?: return
         Picasso.get().load(user.userImageView).into(holder.userIcon)
         holder.userName.text = user.userName
-//        holder.taskName.text = HomeActivity.currentStudyInfos[user.uid]?.taskName
+        holder.taskName.text = studyInfo.taskName
         Glide.with(context).load(R.drawable.edit_animation).into(holder.taskStatusIcon);
     }
 
-    override fun getItemCount(): Int = inRoomUsersList.size
+    override fun getItemCount(): Int = studyInfoList.size
 
-    //フィールドにルームにいるユーザーを保持　変更があれば自動で更新される
+    //ルームにいるユーザーの勉強情報を保持　変更があれば自動で更新される
     //StudyActivityから呼ばれる
-    internal fun setInRoomUsers(inRoomUsersList: MutableList<User>){
-        this.inRoomUsersList = inRoomUsersList
+    internal fun setStudyInfos(studyInfoList: MutableList<StudyInfo>){
+        this.studyInfoList = studyInfoList
         notifyDataSetChanged()
     }
 }

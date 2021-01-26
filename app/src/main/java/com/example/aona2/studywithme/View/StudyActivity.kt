@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.ChatMessage
 import com.example.aona2.studywithme.Model.Room
+import com.example.aona2.studywithme.Model.StudyInfo
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.TimeManage.CalcRemainTime
@@ -37,9 +38,10 @@ class StudyActivity : AppCompatActivity() {
 
     private var room: Room? = null
 
-    private var inRoomUsersList: MutableList<User> = mutableListOf<User>()
-
     private var chatLog = mutableListOf<ChatMessage>()
+
+    //ルームにいる人の勉強情報
+    private var studyInfoList = mutableListOf<StudyInfo>()
 
     //ログで時間を表示するときのフォーマット
     private val simpleDateFormat = SimpleDateFormat("yyyy年MM月dd日 HH時mm分ss.SSS秒")
@@ -54,10 +56,10 @@ class StudyActivity : AppCompatActivity() {
         room = intent.getParcelableExtra<Room>("ROOM_KEY")
         Log.d("StudyActivity", "room id is ${room?.roomId}")
 
-        startRoomAtMillis = room?.roomStartAt
+        startRoomAtMillis = room?.roomStartAt ?: -1
         Log.d("StudyActivity", "start room at  ${simpleDateFormat.format(startRoomAtMillis)}")
 
-        //recyclerviewの設定
+        //ルームにいる人のrecyclerviewの設定
         inRoomFriendListAdapter = InRoomFriendListAdapter(this)
         inRoomFriend_recyclerView_studyActivity.adapter = inRoomFriendListAdapter
         inRoomFriend_recyclerView_studyActivity.layoutManager = LinearLayoutManager(this)
@@ -65,15 +67,15 @@ class StudyActivity : AppCompatActivity() {
         val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         inRoomFriend_recyclerView_studyActivity.addItemDecoration(itemDecoration)
 
-        //recyclerviewの設定
+        //chatLogのrecyclerviewの設定
         chatLogAdapter = ChatLogAdapter(this)
         chat_recyclerView_studyActivity.adapter = chatLogAdapter
         chat_recyclerView_studyActivity.layoutManager = LinearLayoutManager(this)
 
         startTimer()
 
-        //ルームにいる人のリストを作成 adapterに適用する
-        makeInRoomUsersList()
+        //ルームにいる人の勉強情報のリストを作成する adapterに適用する
+        makeStudyInfoList()
 
         //ルーム内のチャットログを取得
         makeChatLog()
@@ -86,7 +88,7 @@ class StudyActivity : AppCompatActivity() {
         //ステータスを無理やり切り替えるためのボタン
         nextMode_btn_studyActivity.setOnClickListener {
             //最初のタイマー起動の場合はキャンセルしない
-            if(myCountDownTimer != null)  myCountDownTimer?.cancel()
+            if (myCountDownTimer != null) myCountDownTimer?.cancel()
 
             //スタータスのみを反転させる
             remainTime = Pair(remainTime.first, !remainTime.second)
@@ -99,7 +101,7 @@ class StudyActivity : AppCompatActivity() {
     }
 
     //ルーム内のチャットログを取得
-    private fun makeChatLog(){
+    private fun makeChatLog() {
         val roomId = room?.roomId ?: return
         val ref = Firebase.database.getReference("/messages/$roomId")
 
@@ -110,36 +112,40 @@ class StudyActivity : AppCompatActivity() {
                 chatLogAdapter.setChatLog(chatLog)
                 chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
+
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
                 chatLog.add(chatMessage)
                 chatLogAdapter.setChatLog(chatLog)
                 chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
+
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
             }
+
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
                 chatLog.remove(chatMessage)
                 chatLogAdapter.setChatLog(chatLog)
                 chat_recyclerView_studyActivity.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
+
             override fun onCancelled(error: DatabaseError) {
             }
         })
     }
 
     //入力されているメッセージを送信する
-    private fun sendMessage(){
+    private fun sendMessage() {
         val uid = Firebase.auth.currentUser?.uid ?: return
         val roomId = room?.roomId ?: return
         val message = messageInput_editText_studyActivity.text.toString()
-        if(message.isEmpty()) return
+        if (message.isEmpty()) return
         //メッセージを取得したらeditTextをクリア
         messageInput_editText_studyActivity.text.clear()
 
         val ref = Firebase.database.getReference("/messages/$roomId").push()
-        if(ref.key == null) return
+        if (ref.key == null) return
         val chatMessage = ChatMessage(ref.key!!, message, roomId, uid, System.currentTimeMillis())
 
         ref.setValue(chatMessage)
@@ -150,9 +156,10 @@ class StudyActivity : AppCompatActivity() {
 
 
     //休憩中に表示されるユーザーアイコンの一覧を更新する
-    private fun refreshSimpleRoomFriendView(){
+    private fun refreshSimpleRoomFriendView() {
         simpleRoomFriend_linear_studyActivity.removeAllViews()
-        inRoomUsersList.forEach { user->
+        studyInfoList.forEach { studyInfo ->
+            val user = HomeActivity.users[studyInfo.uid] ?: return@forEach
             val circleImageView = de.hdodenhof.circleimageview.CircleImageView(this)
             LinearLayout.LayoutParams(
                     convertDpToPx(60), convertDpToPx(60)).let {
@@ -166,54 +173,53 @@ class StudyActivity : AppCompatActivity() {
     }
 
     //ステータスによって表示するViewを変える
-    //見えなくていいものは大きさを0にしている
-    private fun changeViewFromStatus(){
+    private fun changeViewFromStatus() {
         if (remainTime.second) { //勉強中
-            //ユーザーの詳細表示
+            //勉強中のViewを見えるように
             inRoomFriend_recyclerView_studyActivity.visibility = View.VISIBLE
-
-            //ユーザーの簡易表示
+            //休憩中のViewを見えないように
             simpleRoomFriend_linear_studyActivity.visibility = View.GONE
             chat_recyclerView_studyActivity.visibility = View.GONE
             messageInput_constraint_studyActivity.visibility = View.GONE
 
         } else { //休憩中
-            //ユーザーの詳細表示
+            //勉強中のViewを見えないように
             inRoomFriend_recyclerView_studyActivity.visibility = View.GONE
-            //ユーザーの簡易表示
+            //休憩中のViewを見えるように
             simpleRoomFriend_linear_studyActivity.visibility = View.VISIBLE
             messageInput_constraint_studyActivity.visibility = View.VISIBLE
             chat_recyclerView_studyActivity.visibility = View.VISIBLE
         }
     }
 
-    //Firebaseから現在の勉強情報を取得する
-    //自動で更新するように変更
-    private fun makeInRoomUsersList(){
-        Log.d("StudyActivity","make in room users")
-        val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/in_room_users")
-        inRoomUsersRef.addChildEventListener(object : ChildEventListener {
+    //ルームにいるユーザーの勉強情報を取得
+    //勉強中のユーザー一覧表示と休憩中のユーザーアイコンの一覧表示を更新
+    private fun makeStudyInfoList() {
+        val studyInfosRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos")
+        studyInfosRef.addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val uid = snapshot.value
-                inRoomUsersList.add(HomeActivity.users[uid] as User)
-                inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
+                val studyInfo = snapshot.getValue(StudyInfo::class.java) ?: return
+                studyInfoList.add(studyInfo)
+                inRoomFriendListAdapter.setStudyInfos(studyInfoList)
                 refreshSimpleRoomFriendView()
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                val uid = snapshot.value
-                inRoomUsersList.add(HomeActivity.users[uid] as User)
-                inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
+                val studyInfo = snapshot.getValue(StudyInfo::class.java) ?: return
+                studyInfoList.add(studyInfo)
+                inRoomFriendListAdapter.setStudyInfos(studyInfoList)
+                refreshSimpleRoomFriendView()
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                val studyInfo = snapshot.getValue(StudyInfo::class.java) ?: return
+                studyInfoList.remove(studyInfo)
+                inRoomFriendListAdapter.setStudyInfos(studyInfoList)
                 refreshSimpleRoomFriendView()
             }
             override fun onCancelled(error: DatabaseError) {
-            }
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-            }
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                val uid = snapshot.value
-                inRoomUsersList.remove(HomeActivity.users[uid] as User)
-                inRoomFriendListAdapter.setInRoomUsers(inRoomUsersList)
-                refreshSimpleRoomFriendView()
+
             }
         })
     }
@@ -221,10 +227,10 @@ class StudyActivity : AppCompatActivity() {
     //タイマーの起動
     fun startTimer() {
         //最初のタイマー起動の場合はキャンセルしない
-        if(myCountDownTimer != null)  myCountDownTimer?.cancel()
+        if (myCountDownTimer != null) myCountDownTimer?.cancel()
 
         //残り時間の計算
-        remainTime = CalcRemainTime(startRoomAtMillis?:return).calcRemainTime()
+        remainTime = CalcRemainTime(startRoomAtMillis ?: return).calcRemainTime()
 
         //タイマーをセット、開始
         myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
@@ -236,34 +242,26 @@ class StudyActivity : AppCompatActivity() {
         super.onDestroy()
         Log.d("StudyActivity", "onDestroy")
         //一応タイマーをキャンセルしておく
-        if(myCountDownTimer != null)  myCountDownTimer?.cancel()
+        if (myCountDownTimer != null) myCountDownTimer?.cancel()
 
         //Firebase上の退出処理
         val currentUser = Firebase.auth.currentUser
 
         //もしRoomに自分しかいなかったらRoomを削除
-        if(inRoomUsersList.size == 1){
+        if (studyInfoList.size == 1) {
             val roomRef = Firebase.database.getReference("rooms/${room?.roomId}")
             roomRef.removeValue().addOnSuccessListener {
-                Log.d("StudyActivity","delete room is success")
+                Log.d("StudyActivity", "delete room is success")
             }.addOnFailureListener {
-                Log.d("StudyActivity","delete room is failure")
+                Log.d("StudyActivity", "delete room is failure")
             }
-        }else{ //そうじゃなかったらRoomから自分のuidのみを削除
-            val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/in_room_users/${currentUser?.uid}")
+        } else { //そうじゃなかったらRoomから自分のStudyInfoのみを削除
+            val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos/${currentUser?.uid}")
             inRoomUsersRef.removeValue().addOnSuccessListener {
-                Log.d("StudyActivity","delete my uid is success")
+                Log.d("StudyActivity", "delete my study info is success")
             }.addOnFailureListener {
-                Log.d("StudyActivity","delete my uid is failure")
+                Log.d("StudyActivity", "delete my study info is failure")
             }
-        }
-
-        //自分の勉強情報を削除
-        val currentStudyInfoRef = Firebase.database.getReference("CurrentStudyInfos/${currentUser?.uid}")
-        currentStudyInfoRef.removeValue().addOnSuccessListener{
-            Log.d("StudyActivity","delete my current study info is success")
-        }.addOnFailureListener {
-            Log.d("StudyActivity","delete my current study info is failure")
         }
     }
 

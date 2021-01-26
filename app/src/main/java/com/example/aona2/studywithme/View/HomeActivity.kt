@@ -46,7 +46,8 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         recyclerView.addItemDecoration(itemDecoration)
 
         //Firebaseの情報を取得し、recyclerViewに渡す
-        fetchRooms()
+        //fetchUsers()が成功したらfetchRooms()を呼び出す
+        //こうしないとHomeActivityを表示したときにusersがnullでユーザー情報が表示されない可能性がある
         fetchUsers()
 
         //fabがクリックされたら一人で勉強を開始
@@ -81,11 +82,12 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     //recyclerViewのアイテムがクリックされた場合呼び出される
-    //クリックされたユーザーの勉強情報を引数にとる
-    override fun onItemClicked(index: Int, friendRoomId: String) {
+    //クリックされたユーザーのuidとルーム情報を付加する
+    override fun onItemClicked(index: Int, friendUid: String, friendRoom: Room) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
         //intent先にユーザー情報を送る
-        intent.putExtra("STUDY_INFO", friendRoomId)
+        intent.putExtra("FRIEND_UID", friendUid)
+        intent.putExtra("FRIEND_ROOM", friendRoom)
         startActivity(intent)
     }
 
@@ -106,7 +108,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     //Firebaseから部屋情報を取得する
     //自動で更新するように変更
     private fun fetchRooms(){
-        val roomsRef = FirebaseDatabase.getInstance().getReference("/test")
+        val roomsRef = FirebaseDatabase.getInstance().getReference("/rooms")
         roomsRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 Log.d("HomeActivity", "fetch rooms")
@@ -145,6 +147,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                     val user = it.getValue(User::class.java)
                     if(user != null) users[it.key!!] = user
                 }
+                fetchRooms()
             }
             override fun onCancelled(error: DatabaseError) {
             }

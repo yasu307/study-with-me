@@ -24,6 +24,8 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
     //すべての勉強情報　HomeActivityから更新される
     private var allStudyInfos = mutableListOf<StudyInfo>()
 
+    private var rooms = mutableMapOf<String, Room>()
+
     private val clickListener: Listener = listener
 
     inner class StudyingFriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -61,17 +63,21 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
 
         //クリックされたら、ポジションと勉強情報をHomeActivityに送信
         holder.itemView.setOnClickListener {
-            clickListener.onItemClicked(holder.adapterPosition, studyInfo.roomId)
+            clickListener.onItemClicked(holder.adapterPosition, studyInfo.uid, rooms[studyInfo.roomId]?: Room())
         }
     }
 
     //フィールドに現在の勉強情報を保持　変更があれば自動で更新する(まだされない)
     //HomeActivityから呼ばれる
     internal fun setRooms(rooms: MutableMap<String, Room>){
+        Log.d("StudyingFriendListAdapter", "set rooms !!!!!!!!!!!!!!!!!!!!!")
+        this.rooms = rooms
         val tmpStudyInfos = mutableListOf<StudyInfo>()
         rooms.forEach { roomMap ->
-            roomMap.value.inRoomsUsers.forEach { studyInfoMap ->
+            roomMap.value.studyInfos.forEach { studyInfoMap ->
                 tmpStudyInfos.add(studyInfoMap.value)
+                Log.d("StudyingFriendListAdapter", "user id is ${studyInfoMap.value.uid}")
+                Log.d("StudyingFriendListAdapter", "user name is ${HomeActivity.users[studyInfoMap.value.uid]?.userName}")
             }
         }
         allStudyInfos = tmpStudyInfos
@@ -82,6 +88,6 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
 
     //itemがクリックされたか
     interface Listener{
-        fun onItemClicked(index: Int, friendRoomId: String)
+        fun onItemClicked(index: Int, friendUid: String, friendRoom: Room)
     }
 }
