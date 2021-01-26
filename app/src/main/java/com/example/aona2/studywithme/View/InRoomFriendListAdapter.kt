@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
 import com.squareup.picasso.Picasso
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.recyclerview_item_in_room.view.*
 
 //StudyActivityのrecyclerViewのアダプター
 //ルームにいる人のリスト
-class InRoomFriendListAdapter internal constructor(context: Context)
+class InRoomFriendListAdapter internal constructor(val context: Context)
     : RecyclerView.Adapter<InRoomFriendListAdapter.InRoomFriendViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -37,6 +38,7 @@ class InRoomFriendListAdapter internal constructor(context: Context)
         Picasso.get().load(user.userImageView).into(holder.userIcon)
         holder.userName.text = user.userName
         holder.taskName.text = HomeActivity.currentStudyInfos[user.uid]?.taskName
+        Glide.with(context).load(R.drawable.edit_animation).into(holder.taskStatusIcon);
     }
 
     override fun getItemCount(): Int = inRoomUsersList.size

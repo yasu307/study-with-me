@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.aona2.studywithme.Model.CurrentStudyInfo
 import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.TimeManage.CalcRemainTime
@@ -13,7 +14,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
 //HomeActivityの勉強中の友達リストのアダプター
-class StudyingFriendListAdapter internal constructor(context: Context, listener: Listener)
+class StudyingFriendListAdapter internal constructor(val context: Context, listener: Listener)
     : RecyclerView.Adapter<StudyingFriendListAdapter.StudyingFriendViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -54,7 +55,7 @@ class StudyingFriendListAdapter internal constructor(context: Context, listener:
         //残り時間を計算
         val remainTime = CalcRemainTime(currentStudyInfo.roomStartAt).calcRemainTime()
         //勉強中か？のステータスアイコンを出す
-        if (remainTime.second) holder.taskStatusIcon.setImageResource(R.drawable.study_status)
+        if (remainTime.second) Glide.with(context).load(R.drawable.edit_animation).into(holder.taskStatusIcon);
         else holder.taskStatusIcon.setImageResource(R.drawable.breaktime_status)
         //残り時間を表示　ミリ秒->分に変換
         holder.remainTime.text = "${remainTime.first / 60000}分"
