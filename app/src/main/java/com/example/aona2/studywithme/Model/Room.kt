@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Room(val roomId: String, val roomStartAt: Long): Parcelable {
-    constructor() : this("",0)
+data class Room(val roomId: String, val roomStartAt: Long, val inRoomsUsers: Map<String, StudyInfo>): Parcelable {
+    constructor() : this("",0, emptyMap<String, StudyInfo>())
 }
