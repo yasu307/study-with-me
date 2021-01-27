@@ -100,6 +100,11 @@ class StudyActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        supportActionBar!!.hide()
+    }
+
     //ルーム内のチャットログを取得
     private fun makeChatLog() {
         val roomId = room?.roomId ?: return
