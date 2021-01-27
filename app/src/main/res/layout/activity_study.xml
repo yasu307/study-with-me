@@ -23,7 +23,8 @@
             android:layout_marginTop="16dp"
             android:text="00:00"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="50sp"
+            android:textColor="@color/black"
+            android:textSize="60sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,12 +48,31 @@
 
         <Button
             android:id="@+id/nextMode_btn_studyActivity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Button"
-            app:layout_constraintStart_toEndOf="@+id/remain_time_textView"
+            android:layout_width="15dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/remain_time_textView" />
+
+        <ImageView
+            android:id="@+id/studyStatus_imageView_studyActivity"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView"
+            app:layout_constraintEnd_toStartOf="@+id/remain_time_textView"
+            app:layout_constraintTop_toTopOf="@+id/remain_time_textView"
+            app:srcCompat="@drawable/study_status" />
+
+        <ImageView
+            android:id="@+id/breaktimeStatus_imageView_studyActivity"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView"
+            app:layout_constraintEnd_toStartOf="@+id/remain_time_textView"
+            app:layout_constraintTop_toTopOf="@+id/remain_time_textView"
+            app:srcCompat="@drawable/breaktime_status" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

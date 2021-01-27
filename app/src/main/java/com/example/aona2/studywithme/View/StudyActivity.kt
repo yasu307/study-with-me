@@ -182,18 +182,21 @@ class StudyActivity : AppCompatActivity() {
         if (remainTime.second) { //勉強中
             //勉強中のViewを見えるように
             inRoomFriend_recyclerView_studyActivity.visibility = View.VISIBLE
+            studyStatus_imageView_studyActivity.visibility = View.VISIBLE
             //休憩中のViewを見えないように
             simpleRoomFriend_linear_studyActivity.visibility = View.GONE
             chat_recyclerView_studyActivity.visibility = View.GONE
             messageInput_constraint_studyActivity.visibility = View.GONE
-
+            breaktimeStatus_imageView_studyActivity.visibility = View.GONE
         } else { //休憩中
             //勉強中のViewを見えないように
             inRoomFriend_recyclerView_studyActivity.visibility = View.GONE
+            studyStatus_imageView_studyActivity.visibility = View.GONE
             //休憩中のViewを見えるように
             simpleRoomFriend_linear_studyActivity.visibility = View.VISIBLE
             messageInput_constraint_studyActivity.visibility = View.VISIBLE
             chat_recyclerView_studyActivity.visibility = View.VISIBLE
+            breaktimeStatus_imageView_studyActivity.visibility = View.VISIBLE
         }
     }
 
