@@ -183,6 +183,7 @@ class StudyActivity : AppCompatActivity() {
             //勉強中のViewを見えるように
             inRoomFriend_recyclerView_studyActivity.visibility = View.VISIBLE
             studyStatus_imageView_studyActivity.visibility = View.VISIBLE
+            question_fab_studyActivity.visibility = View.VISIBLE
             //休憩中のViewを見えないように
             simpleRoomFriend_linear_studyActivity.visibility = View.GONE
             chat_recyclerView_studyActivity.visibility = View.GONE
@@ -192,6 +193,7 @@ class StudyActivity : AppCompatActivity() {
             //勉強中のViewを見えないように
             inRoomFriend_recyclerView_studyActivity.visibility = View.GONE
             studyStatus_imageView_studyActivity.visibility = View.GONE
+            question_fab_studyActivity.visibility = View.GONE
             //休憩中のViewを見えるように
             simpleRoomFriend_linear_studyActivity.visibility = View.VISIBLE
             messageInput_constraint_studyActivity.visibility = View.VISIBLE
