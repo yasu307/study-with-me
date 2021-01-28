@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.Room
@@ -17,6 +18,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
@@ -30,6 +33,9 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     private var rooms = mutableMapOf<String, Room>()
 
     private lateinit var adapter: StudyingFriendListAdapter
+
+    private var menuUserIcon: MenuItem? = null
+    private var userIcon: CircleImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +53,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         recyclerView.addItemDecoration(itemDecoration)
 
         //Firebaseの情報を取得し、recyclerViewに渡す
-        //fetchUsers()が成功したらfetchRooms()を呼び出す
+        //fetchUsers()が成功したらfetchRooms(),setUserIconを呼び出す
         //こうしないとHomeActivityを表示したときにusersがnullでユーザー情報が表示されない可能性がある
         fetchUsers()
 
@@ -69,6 +75,12 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("HomeActivity","on start")
+        invalidateOptionsMenu()
+    }
+
     //resumeのときrecyclerViewを更新
     override fun onResume() {
         super.onResume()
@@ -83,12 +95,19 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
+            R.id.user_icon ->{
+                Log.d("HomeActivity","user icon was tapped")
+                invalidateOptionsMenu()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.d("HomeActivity","on create options menu")
         menuInflater.inflate(R.menu.nav_menu, menu)
+        menuUserIcon = menu?.findItem(R.id.user_icon)
+        menuUserIcon?.icon = userIcon?.drawable
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -158,10 +177,27 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                     val user = it.getValue(User::class.java)
                     if(user != null) users[it.key!!] = user
                 }
+                setUserIcon()
                 fetchRooms()
             }
             override fun onCancelled(error: DatabaseError) {
             }
         })
     }
+
+    private fun setUserIcon(){
+        val uid = Firebase.auth.currentUser?.uid ?:return
+        val userImageView = users[uid]?.userImageView ?:return
+        userIcon = CircleImageView(this).apply {
+            circleBackgroundColor = resources.getColor(android.R.color.white)
+            Picasso.get().load(userImageView).into(this)
+        }
+        invalidateOptionsMenu()
+//        val bitmap = actionbarIcon.drawable.toBitmap()
+//        val actionBar = this.supportActionBar ?:return
+//        actionBar.customView = actionbarIcon
+//        actionBar.customView.right
+//        actionBar.setDisplayShowCustomEnabled(true)
+    }
+
 }
