@@ -1,19 +1,19 @@
 package com.example.aona2.studywithme.View
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
-import com.example.aona2.studywithme.Model.CurrentStudyInfo
+import androidx.appcompat.app.AppCompatActivity
 import com.example.aona2.studywithme.Model.Room
 import com.example.aona2.studywithme.Model.StudyInfo
 import com.example.aona2.studywithme.R
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_task_name_input.*
 import java.util.*
+
 
 class TaskNameInputActivity : AppCompatActivity() {
     private val myUid = Firebase.auth.currentUser?.uid
@@ -35,6 +35,12 @@ class TaskNameInputActivity : AppCompatActivity() {
 
         //スタートボタンが押された場合
         start_task_button.setOnClickListener {
+            //スタートボタンを連打したときに二重で動作してしまうので
+            //押した後は1秒間入力を無効化
+            //本来は処理をしている間だけ無効にしなくてはいけない
+            it.isEnabled = false
+            Handler().postDelayed(Runnable { it.isEnabled = true }, 1000)
+
             if(friendRoom == null){ // 一人で勉強を始める場合
                 Log.d("TaskNameInputActivity", "start study alone")
                 makeRoom()

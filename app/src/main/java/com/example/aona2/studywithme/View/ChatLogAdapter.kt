@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.chat_to_row.view.*
 
 //休憩中に表示されるチャットログのrecyclerViewに適用されるadapter
 class ChatLogAdapter internal constructor(context: Context)
-    : RecyclerView.Adapter<ChatLogAdapter.ChatLogViewHolder>(){
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -30,20 +30,32 @@ class ChatLogAdapter internal constructor(context: Context)
     //自分のuid
     private val uid = Firebase.auth.currentUser?.uid
 
-    inner class ChatLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class ChatFromRowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        val iconFrom = itemView.imageView_chatFromRow
+        val messageFrom = itemView.textView_chatFromRow
+    }
+
+    inner class ChatToRowViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        val iconTo = itemView.imageView_chatToRow
+        val messageTo = itemView.textView_chatToRow
     }
 
     //ViewTypeに対応したレイアウトを返す
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatLogAdapter.ChatLogViewHolder {
-        val itemView = when(viewType){
-            VIEW_TYPE_FROM ->
-                inflater.inflate(R.layout.chat_from_row, parent, false)
-            VIEW_TYPE_TO ->
-                inflater.inflate(R.layout.chat_to_row, parent, false)
-            else ->
-                inflater.inflate(R.layout.chat_from_row, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        when (viewType) {
+            VIEW_TYPE_FROM -> {
+                val itemView = inflater.inflate(R.layout.chat_from_row, parent, false)
+                return ChatFromRowViewHolder(itemView)
+            }
+            VIEW_TYPE_TO -> {
+                val itemView = inflater.inflate(R.layout.chat_to_row, parent, false)
+                return ChatToRowViewHolder(itemView)
+            }
+            else -> {//それ以外（ないはず）
+                val itemView = inflater.inflate(R.layout.chat_from_row, parent, false)
+                return ChatFromRowViewHolder(itemView)
+            }
         }
-        return ChatLogViewHolder(itemView)
     }
 
     //chatMessageに対応したViewTypeを返す
@@ -53,20 +65,18 @@ class ChatLogAdapter internal constructor(context: Context)
         else return VIEW_TYPE_TO
     }
 
-    override fun onBindViewHolder(holder: ChatLogViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val chatMessage = chatLog[position]
         if (chatMessage.fromId == uid) { //自分が送信したchatMessage
+            val holder = holder as ChatFromRowViewHolder
             val user = HomeActivity.users[uid]
-            val iconFrom = holder.itemView.imageView_chatFromRow
-            val messageFrom = holder.itemView.textView_chatFromRow
-            Picasso.get().load(user?.userImageView).into(iconFrom)
-            messageFrom.text = chatMessage.text
+            Picasso.get().load(user?.userImageView).into(holder.iconFrom)
+            holder.messageFrom.text = chatMessage.text
         }else{ //自分以外が送信したchatMessage
+            val holder = holder as ChatToRowViewHolder
             val user = HomeActivity.users[chatMessage.fromId]
-            val iconTo = holder.itemView.imageView_chatToRow
-            val messageTo = holder.itemView.textView_chatToRow
-            Picasso.get().load(user?.userImageView).into(iconTo)
-            messageTo.text = chatMessage.text
+            Picasso.get().load(user?.userImageView).into(holder.iconTo)
+            holder.messageTo.text = chatMessage.text
         }
     }
 
