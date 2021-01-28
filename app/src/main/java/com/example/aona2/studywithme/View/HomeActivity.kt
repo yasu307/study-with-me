@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.Room
@@ -21,6 +22,8 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.coroutines.runBlocking
+import java.lang.Exception
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
@@ -58,14 +61,14 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         fetchUsers()
 
         //1分ごとにRecyclerViewを更新する
-        val handler = Handler()
-        var runnable = Runnable {  }
-        runnable = Runnable {
-            adapter.notifyDataSetChanged()
-            handler.postDelayed(runnable, 60 * 1000)
-            Log.d("HomeActivity", "refresh by handler")
-        }
-        handler.post(runnable)
+//        val handler = Handler()
+//        var runnable = Runnable {  }
+//        runnable = Runnable {
+//            adapter.notifyDataSetChanged()
+//            handler.postDelayed(runnable, 60 * 1000)
+//            Log.d("HomeActivity", "refresh by handler")
+//        }
+//        handler.post(runnable)
 
         //fabがクリックされたら一人で勉強を開始
         //何も付加情報なしでTaskNameInputActivityに遷移
@@ -73,12 +76,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d("HomeActivity","on start")
-        invalidateOptionsMenu()
     }
 
     //resumeのときrecyclerViewを更新
@@ -107,7 +104,10 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         Log.d("HomeActivity","on create options menu")
         menuInflater.inflate(R.menu.nav_menu, menu)
         menuUserIcon = menu?.findItem(R.id.user_icon)
-        menuUserIcon?.icon = userIcon?.drawable
+        if(menuUserIcon == null) Log.d("HomeActivity","menu user icon is null!!!!!!!!!!!")
+        if(userIcon == null) Log.d("HomeActivity", "user icon is null!!!!!!!!!!!!")
+        menuUserIcon?.setIcon(R.drawable.member1)
+//        testImageView.setImageDrawable(userIcon?.drawable)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -188,16 +188,26 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     private fun setUserIcon(){
         val uid = Firebase.auth.currentUser?.uid ?:return
         val userImageView = users[uid]?.userImageView ?:return
-        userIcon = CircleImageView(this).apply {
-            circleBackgroundColor = resources.getColor(android.R.color.white)
-            Picasso.get().load(userImageView).into(this)
+
+        val activity = this
+
+        runBlocking {
+            Log.d("HomeActivity","run blocking")
+            userIcon = CircleImageView(activity)
+            userIcon?.circleBackgroundColor = resources.getColor(android.R.color.white)
+            Picasso.get().load(userImageView).into(userIcon)
+            Log.d("HomeActivity","run blocking is end")
         }
+        if(userIcon == null) Log.d("HomeActivity", "user icon is null in set user icon")
+        Log.d("HomeActivity", "finish run on ui thread")
         invalidateOptionsMenu()
+        testImageView.setImageDrawable(R.drawable.member1.toDrawable())
 //        val bitmap = actionbarIcon.drawable.toBitmap()
 //        val actionBar = this.supportActionBar ?:return
 //        actionBar.customView = actionbarIcon
 //        actionBar.customView.right
 //        actionBar.setDisplayShowCustomEnabled(true)
+
     }
 
 }
