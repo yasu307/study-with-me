@@ -3,6 +3,7 @@ package com.example.aona2.studywithme.View
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -49,6 +50,16 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         //fetchUsers()が成功したらfetchRooms()を呼び出す
         //こうしないとHomeActivityを表示したときにusersがnullでユーザー情報が表示されない可能性がある
         fetchUsers()
+
+        //1分ごとにRecyclerViewを更新する
+        val handler = Handler()
+        var runnable = Runnable {  }
+        runnable = Runnable {
+            adapter.notifyDataSetChanged()
+            handler.postDelayed(runnable, 60 * 1000)
+            Log.d("HomeActivity", "refresh by handler")
+        }
+        handler.post(runnable)
 
         //fabがクリックされたら一人で勉強を開始
         //何も付加情報なしでTaskNameInputActivityに遷移
