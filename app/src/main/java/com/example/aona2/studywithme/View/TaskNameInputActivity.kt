@@ -36,7 +36,8 @@ class TaskNameInputActivity : AppCompatActivity() {
         //スタートボタンが押された場合
         start_task_button.setOnClickListener {
             //スタートボタンを連打したときに二重で動作してしまうので
-            //押した後は1秒かん入力を無効化
+            //押した後は1秒間入力を無効化
+            //本来は処理をしている間だけ無効にしなくてはいけない
             it.isEnabled = false
             Handler().postDelayed(Runnable { it.isEnabled = true }, 1000)
 
