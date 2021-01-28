@@ -1,29 +1,27 @@
 package com.example.aona2.studywithme.View
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.graphics.drawable.toBitmap
+import android.widget.ImageView
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.Room
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.runBlocking
-import java.lang.Exception
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
@@ -76,6 +74,12 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
+
+        val actionBar = this.supportActionBar
+        val imageView = ImageView(this)
+        imageView.setImageResource(R.drawable.member1)
+        actionBar?.setCustomView(imageView, ActionBar.LayoutParams(Gravity.RIGHT))
+        actionBar?.setDisplayShowCustomEnabled(true)
     }
 
     //resumeのときrecyclerViewを更新
@@ -106,7 +110,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         menuUserIcon = menu?.findItem(R.id.user_icon)
         if(menuUserIcon == null) Log.d("HomeActivity","menu user icon is null!!!!!!!!!!!")
         if(userIcon == null) Log.d("HomeActivity", "user icon is null!!!!!!!!!!!!")
-        menuUserIcon?.setIcon(R.drawable.member1)
+//        menuUserIcon?.setIcon(R.drawable.member1)
 //        testImageView.setImageDrawable(userIcon?.drawable)
         return super.onCreateOptionsMenu(menu)
     }
@@ -201,7 +205,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         if(userIcon == null) Log.d("HomeActivity", "user icon is null in set user icon")
         Log.d("HomeActivity", "finish run on ui thread")
         invalidateOptionsMenu()
-        testImageView.setImageDrawable(R.drawable.member1.toDrawable())
+//        testImageView.setImageDrawable(R.drawable.member1.toDrawable())
 //        val bitmap = actionbarIcon.drawable.toBitmap()
 //        val actionBar = this.supportActionBar ?:return
 //        actionBar.customView = actionbarIcon
