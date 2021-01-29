@@ -2,6 +2,7 @@ package com.example.aona2.studywithme.View
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -21,7 +22,6 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.coroutines.runBlocking
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
@@ -34,9 +34,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     private var rooms = mutableMapOf<String, Room>()
 
     private lateinit var adapter: StudyingFriendListAdapter
-
-    private var menuUserIcon: MenuItem? = null
-    private var userIcon: CircleImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,14 +56,14 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         fetchUsers()
 
         //1分ごとにRecyclerViewを更新する
-//        val handler = Handler()
-//        var runnable = Runnable {  }
-//        runnable = Runnable {
-//            adapter.notifyDataSetChanged()
-//            handler.postDelayed(runnable, 60 * 1000)
-//            Log.d("HomeActivity", "refresh by handler")
-//        }
-//        handler.post(runnable)
+        val handler = Handler()
+        var runnable = Runnable {  }
+        runnable = Runnable {
+            adapter.notifyDataSetChanged()
+            handler.postDelayed(runnable, 60 * 1000)
+            Log.d("HomeActivity", "refresh by handler")
+        }
+        handler.post(runnable)
 
         //fabがクリックされたら一人で勉強を開始
         //何も付加情報なしでTaskNameInputActivityに遷移
@@ -74,12 +71,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
-
-        val actionBar = this.supportActionBar
-        val imageView = ImageView(this)
-        imageView.setImageResource(R.drawable.member1)
-        actionBar?.setCustomView(imageView, ActionBar.LayoutParams(Gravity.RIGHT))
-        actionBar?.setDisplayShowCustomEnabled(true)
     }
 
     //resumeのときrecyclerViewを更新
@@ -96,10 +87,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
-            R.id.user_icon ->{
-                Log.d("HomeActivity","user icon was tapped")
-                invalidateOptionsMenu()
-            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -107,11 +94,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         Log.d("HomeActivity","on create options menu")
         menuInflater.inflate(R.menu.nav_menu, menu)
-        menuUserIcon = menu?.findItem(R.id.user_icon)
-        if(menuUserIcon == null) Log.d("HomeActivity","menu user icon is null!!!!!!!!!!!")
-        if(userIcon == null) Log.d("HomeActivity", "user icon is null!!!!!!!!!!!!")
-//        menuUserIcon?.setIcon(R.drawable.member1)
-//        testImageView.setImageDrawable(userIcon?.drawable)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -190,28 +172,14 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     private fun setUserIcon(){
-        val uid = Firebase.auth.currentUser?.uid ?:return
-        val userImageView = users[uid]?.userImageView ?:return
-
-        val activity = this
-
-        runBlocking {
-            Log.d("HomeActivity","run blocking")
-            userIcon = CircleImageView(activity)
-            userIcon?.circleBackgroundColor = resources.getColor(android.R.color.white)
-            Picasso.get().load(userImageView).into(userIcon)
-            Log.d("HomeActivity","run blocking is end")
-        }
-        if(userIcon == null) Log.d("HomeActivity", "user icon is null in set user icon")
-        Log.d("HomeActivity", "finish run on ui thread")
-        invalidateOptionsMenu()
-//        testImageView.setImageDrawable(R.drawable.member1.toDrawable())
-//        val bitmap = actionbarIcon.drawable.toBitmap()
-//        val actionBar = this.supportActionBar ?:return
-//        actionBar.customView = actionbarIcon
-//        actionBar.customView.right
-//        actionBar.setDisplayShowCustomEnabled(true)
-
+        val uid = Firebase.auth.currentUser?.uid ?: return
+        val userImageView = users[uid]?.userImageView ?: return
+        val actionBar = this.supportActionBar
+        val userIcon = CircleImageView(this)
+        Picasso.get().load(userImageView).into(userIcon)
+        userIcon.circleBackgroundColor = resources.getColor(android.R.color.white)
+        userIcon.borderWidth = 2
+        actionBar?.setCustomView(userIcon, ActionBar.LayoutParams(Gravity.RIGHT))
+        actionBar?.setDisplayShowCustomEnabled(true)
     }
-
 }
