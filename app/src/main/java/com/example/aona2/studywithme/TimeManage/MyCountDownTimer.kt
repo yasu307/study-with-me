@@ -3,6 +3,7 @@ package com.example.aona2.studywithme.TimeManage
 import android.content.Context
 import android.os.CountDownTimer
 import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import android.util.Log
 import android.widget.ProgressBar
@@ -62,11 +63,11 @@ class MyCountDownTimer(
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Log.d("MyCountDownTimer", "vibration effect")
-            val vibrationEffect = VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE)
+            val vibrationEffect = VibrationEffect.createWaveform(longArrayOf(1000, 0, 1000), intArrayOf(DEFAULT_AMPLITUDE, 0, DEFAULT_AMPLITUDE), -1)
             vibrator.vibrate(vibrationEffect)
         } else {
             Log.d("MyCountDownTimer", "vibrator vibrate")
-            vibrator.vibrate(300)
+            vibrator.vibrate(longArrayOf(0, 1000, 400, 1000), -1)
         }
 
         //次のタイマーをスタート
