@@ -1,5 +1,6 @@
 package com.example.aona2.studywithme.View
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -97,6 +98,12 @@ class StudyActivity : AppCompatActivity() {
             myCountDownTimer = MyCountDownTimer(remainTime.first, 1000, remainTime.second, remain_time_textView, remain_time_progressBar, this)
             myCountDownTimer?.start()
             changeViewFromStatus()
+        }
+
+        //質問ボタンが押されたらダミーの質問アクティビティへ遷移
+        question_fab_studyActivity.setOnClickListener{
+            val intent = Intent(this, DummyQuestionActivity::class.java)
+            startActivity(intent)
         }
     }
 

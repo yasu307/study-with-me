@@ -62,6 +62,7 @@
             android:layout_width="15dp"
             android:layout_height="50dp"
             android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/remain_time_textView" />
 
