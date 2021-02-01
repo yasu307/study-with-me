@@ -83,6 +83,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
+        android:contentDescription="taskStatusIcon"
         app:layout_constraintBottom_toBottomOf="@+id/user_icon"
         app:layout_constraintEnd_toStartOf="@+id/remain_time"
         app:layout_constraintTop_toTopOf="@+id/user_icon"

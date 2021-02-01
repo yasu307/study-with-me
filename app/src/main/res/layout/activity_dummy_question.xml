@@ -127,6 +127,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginEnd="24dp"
+            android:contentDescription="studyStatus"
             app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView_dummy"
             app:layout_constraintEnd_toStartOf="@+id/remain_time_textView_dummy"
             app:layout_constraintTop_toTopOf="@+id/remain_time_textView_dummy"
