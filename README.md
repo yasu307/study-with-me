@@ -8,7 +8,8 @@
 https://www.slideshare.net/secret/hTv1ZtdwDRlMJS
 
 # Note
-正常に動作しない場合はお気軽にご連絡ください。連絡方法はGitHub、メールどちらでも構いません。<br>
+改善したほうがいい点や正常に動作しない場合などありましたらお気軽にご連絡ください。<br>
+連絡方法はGitHub、メールどちらでも構いません。<br>
 
 Icon8様のアイコンを使用させて頂いています。<br>
 https://icons8.jp/<br>
