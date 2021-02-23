@@ -28,13 +28,16 @@ class LoginFragment : Fragment() {
                 Log.d("LoginFragment","all user is ${it.value.userName}")
             }
         })
-        viewModel.message.onEach { onMessage(it) }.launchIn(lifecycleScope)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        return inflater.inflate(R.layout.fragment_login, container, false).also {
+            viewModel.message
+                .onEach { onMessage(it) }
+                .launchIn(lifecycleScope)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -25,7 +25,7 @@ class UserRepository {
         getAllUsers()
     }
 
-    private fun getAllUsers(): LiveData<Map<String, User>>{
+    fun getAllUsers(): LiveData<Map<String, User>>{
         loadAllUsers()
         return allUsers
     }
