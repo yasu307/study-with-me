@@ -1,8 +1,8 @@
 # Study with me!
 
 # Features
+授業にて作成したAndroidアプリです。
 友達と一緒に勉強するときに発生する様々な問題点を解決するアプリです。
-授業にてコンセプト考案から実装まで自分で作成しました。
 
 詳しいコンセプトやアプリの画面などは以下のスライドで確認してください。
 https://www.slideshare.net/secret/hTv1ZtdwDRlMJS
