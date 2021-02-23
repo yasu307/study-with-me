@@ -1,13 +1,15 @@
 package com.example.aona2.studywithme
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.aona2.studywithme.Model.CurrentStudyInfo
 import com.example.aona2.studywithme.Model.User
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 
 class CurrentStudyInfoRepository {
-    val currentStudyInfos = MutableLiveData<List<CurrentStudyInfo>>()
+    val currentStudyInfos = MutableLiveData<MutableList<CurrentStudyInfo>>()
 
     init{
         getCurrentStudyInfos()
@@ -15,19 +17,27 @@ class CurrentStudyInfoRepository {
 
     private fun getCurrentStudyInfos(){
         val currentStudyInfosRef = FirebaseDatabase.getInstance().getReference("/CurrentStudyInfos")
-        currentStudyInfosRef.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("CurrentStudyInfoRepository","on data change")
-                val studyInfos = mutableListOf<CurrentStudyInfo>()
-                snapshot.children.forEach {
-                    val studyInfo = it.getValue(CurrentStudyInfo::class.java) ?: return@forEach
-                    studyInfos.add(studyInfo)
-                }
-                currentStudyInfos.value = studyInfos
+        currentStudyInfosRef.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
+                if (currentStudyInfo != null) currentStudyInfos.value?.add(currentStudyInfo)
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
+                if (currentStudyInfo != null) currentStudyInfos.value?.add(currentStudyInfo)
+            }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
+                if (currentStudyInfo != null) currentStudyInfos.value?.remove(currentStudyInfo)
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.d("CurrentStudyInfoRepository","on data cancelled")
+
             }
         })
     }
+
+
 }

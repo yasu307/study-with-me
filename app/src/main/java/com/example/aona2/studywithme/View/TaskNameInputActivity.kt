@@ -47,7 +47,7 @@ class TaskNameInputActivity : AppCompatActivity() {
         val roomRef = Firebase.database.getReference("rooms").push()
         if(roomRef.key == null) return
         val nowMillis = Calendar.getInstance().timeInMillis
-        val room = Room(roomRef.key!!, nowMillis, emptyList())
+        val room = Room(roomRef.key!!, nowMillis)
         roomRef.setValue(room)
                 .addOnSuccessListener {
                     Log.d("HomeActivity", "save room to Firebase is success")
