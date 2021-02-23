@@ -1,6 +1,7 @@
-package com.example.aona2.studywithme.OldView
+package com.example.aona2.studywithme.View
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

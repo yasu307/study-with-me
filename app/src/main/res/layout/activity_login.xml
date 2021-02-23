@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OldView.LoginActivity">
+    tools:context=".View.LoginActivity">
 
     <EditText
         android:id="@+id/email_edittext_login_activity"

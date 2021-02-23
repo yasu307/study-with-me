@@ -1,4 +1,4 @@
-package com.example.aona2.studywithme.OldView
+package com.example.aona2.studywithme.View
 
 import android.content.Context
 import android.view.LayoutInflater

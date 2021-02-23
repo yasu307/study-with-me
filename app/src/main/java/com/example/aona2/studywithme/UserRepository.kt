@@ -1,7 +1,9 @@
-package com.example.aona2.studywithme.Model
+package com.example.aona2.studywithme
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.aona2.studywithme.Model.User
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -12,19 +14,16 @@ import com.google.firebase.ktx.Firebase
 class UserRepository {
     //Map<uid, user>
     val allUsers = MutableLiveData<Map<String, User>>()
-    //Mapとして使用するためのキャッシュ
     var cashAllUsers = mapOf<String, User>()
 
     init{
         getAllUsers()
     }
 
-    //すべてのユーザーをFirebaseから取得する　分ける必要はないので後にまとめる
     private fun getAllUsers(){
         loadAllUsers()
     }
 
-    //すべてのユーザーをFirebaseから取得する
     private fun loadAllUsers(){
         val ref = Firebase.database.getReference("/users")
         ref.addValueEventListener(object : ValueEventListener {
@@ -35,9 +34,7 @@ class UserRepository {
                     val user = userSnapShot.getValue(User::class.java) ?: continue
                     users[user.uid] = user
                 }
-                //LiveDataを更新
                 allUsers.value = users
-                //キャッシュを更新
                 cashAllUsers = users
             }
             override fun onCancelled(error: DatabaseError) {
@@ -46,7 +43,6 @@ class UserRepository {
         })
     }
 
-    //ログインしているかチェック ログインしているか？を返す
     fun checkLogin(): Boolean{
         val currentUser = Firebase.auth.currentUser
         if(currentUser != null){
@@ -56,7 +52,6 @@ class UserRepository {
         return false
     }
 
-    //サインアウトする
     fun signOut(){
         Firebase.auth.signOut()
     }

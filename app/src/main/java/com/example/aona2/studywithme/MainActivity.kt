@@ -1,8 +1,7 @@
-package com.example.aona2.studywithme.NewView
+package com.example.aona2.studywithme
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.aona2.studywithme.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

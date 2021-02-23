@@ -5,7 +5,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.aona2.studywithme.R
-import com.example.aona2.studywithme.OldView.StudyActivity
+import com.example.aona2.studywithme.View.StudyActivity
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
 import java.util.*

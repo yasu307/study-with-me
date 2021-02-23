@@ -1,7 +1,8 @@
-package com.example.aona2.studywithme.Model
+package com.example.aona2.studywithme
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.aona2.studywithme.Model.Room
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -14,7 +15,6 @@ import java.util.*
 
 class RoomRepository {
     val allRooms = MutableLiveData<List<Room>>()
-    //リストとして使用するためのキャッシュ
     var cashAllRooms = listOf<Room>()
 
     init {
@@ -22,7 +22,6 @@ class RoomRepository {
         checkSetValue()
     }
 
-    //Firebaseからすべてのルームを取得する
     private fun getAllRooms(){
         val ref = Firebase.database.getReference("/rooms")
         ref.addValueEventListener(object : ValueEventListener{
@@ -32,9 +31,7 @@ class RoomRepository {
                     val room = it.getValue(Room::class.java) ?: return@forEach
                     rooms.add(room)
                 }
-                //キャッシュを更新
                 cashAllRooms = rooms
-                //LiveDataを更新
                 allRooms.value = rooms
             }
             override fun onCancelled(error: DatabaseError) {
@@ -43,7 +40,6 @@ class RoomRepository {
         })
     }
 
-    //Firebaseに新しくルームを保存できるかチェックする　後に消す
     private fun checkSetValue(){
         val ref = Firebase.database.getReference("/rooms").push()
         val nowMillis = Calendar.getInstance().timeInMillis
@@ -52,13 +48,10 @@ class RoomRepository {
         ref.setValue(room)
     }
 
-    //すでにあるルームに自分のuidを追加する　友達の勉強に参加するときに使用する
     suspend fun addMyInfoToRoom(friendUid: String){
 
     }
 
-    //新しくルームを作成　自分のuidをroomに追加する
-    //一人で勉強を開始するときに使用する
     suspend fun makeRoom() : Room?{
         Log.d("RoomRepository","make room")
         val roomRef = Firebase.database.getReference("rooms").push()
@@ -77,4 +70,7 @@ class RoomRepository {
         }
         return room
     }
+
+
+
 }

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.aona2.studywithme.NewView.RegisterFragment"
+        android:name="com.example.aona2.studywithme.new.RegisterFragment"
         android:label="fragment_register_flagment"
         tools:layout="@layout/fragment_register_flagment" >
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.aona2.studywithme.NewView.LoginFragment"
+        android:name="com.example.aona2.studywithme.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
 </navigation>
