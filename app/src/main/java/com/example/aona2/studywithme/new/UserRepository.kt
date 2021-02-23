@@ -17,7 +17,37 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class UserSettingRepository {
+class UserRepository {
+    //Map<uid, user>
+    val allUsers = MutableLiveData<Map<String, User>>()
+
+    init{
+        getAllUsers()
+    }
+
+    private fun getAllUsers(): LiveData<Map<String, User>>{
+        loadAllUsers()
+        return allUsers
+    }
+
+    private fun loadAllUsers(){
+        val ref = Firebase.database.getReference("/users")
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("UserRepository","on data change")
+                val users = mutableMapOf<String, User>()
+                for(userSnapShot in snapshot.children){
+                    val user = userSnapShot.getValue(User::class.java) ?: continue
+                    users[user.uid] = user
+                }
+                allUsers.value = users
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("UserRepository","on data cancelled")
+            }
+        })
+    }
+
     suspend fun login(email: String, password: String): Boolean{
         var isSucceeded = false
         try{
@@ -82,7 +112,7 @@ class UserSettingRepository {
     }
 
     private suspend fun saveUser(uid: String, userName: String, userImageUrl: String): Boolean{
-        var isSucceeded = false
+        var isSucceeded: Boolean = false
         val ref = Firebase.database.getReference("users/$uid")
 
         val user = User(uid , userName, userImageUrl)

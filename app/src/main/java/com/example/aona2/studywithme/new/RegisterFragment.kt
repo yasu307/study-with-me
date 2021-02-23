@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.aona2.studywithme.MainActivity
 import com.example.aona2.studywithme.R
 import com.example.aona2.studywithme.new.UserSettingViewModel.Message
 import kotlinx.android.synthetic.main.fragment_register_flagment.*
@@ -57,6 +59,7 @@ class RegisterFragment : Fragment() {
         haveAccount_textView_registerFragment.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
+
 
         selectPhoto_btn_registerFragment.setOnClickListener {
             //写真選択用のintentに遷移する
@@ -102,8 +105,8 @@ class RegisterFragment : Fragment() {
 
     private fun onMessage(message: Message) {
         when (message) {
-            is Message.RegisterSucceeded -> onMessageSucceeded()
-            is Message.RegisterFailed -> onMessageFailed()
+            is Message.Succeeded -> onMessageSucceeded()
+            is Message.Failed -> onMessageFailed()
         }
     }
 

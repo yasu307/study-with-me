@@ -16,7 +16,6 @@ import com.example.aona2.studywithme.new.UserSettingViewModel
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import com.example.aona2.studywithme.new.UserSettingViewModel.Message
 
 class LoginFragment : Fragment() {
     private val viewModel: UserSettingViewModel by activityViewModels()
@@ -45,8 +44,9 @@ class LoginFragment : Fragment() {
             performLogin()
         }
 
-//        backToRegister__textView_loginFragment.setOnClickListener {
-//        }
+        backToRegister__textView_loginFragment.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
     }
 
     private fun performLogin() {
@@ -66,20 +66,18 @@ class LoginFragment : Fragment() {
     }
 
 
-    private fun onMessage(message: Message) {
+    private fun onMessage(message: UserSettingViewModel.Message) {
         when (message) {
-            is Message.LoginSucceeded -> onMessageSucceeded()
-            is Message.LoginFailed -> onMessageFailed()
+            is UserSettingViewModel.Message.LoginSucceeded -> onMessageSucceeded()
+            is UserSettingViewModel.Message.LoginFailed -> onMessageFailed()
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
     private fun onMessageSucceeded(){
         Log.d("LoginFragment","on message succeeded")
-        val intent = Intent(activity, MainActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(activity, MainActivity::class.java)
+//        startActivity(intent)
     }
-    @Suppress("UNUSED_PARAMETER")
     private fun onMessageFailed(){
         Log.d("LoginFragment","on message failed")
     }
