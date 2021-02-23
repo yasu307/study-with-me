@@ -9,20 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyWithMe">
-        <activity android:name=".NewActivity">
+        <activity android:name=".View.LoginActivity"></activity>
+        <activity android:name=".View.StudyActivity" />
+        <activity
+            android:name=".View.TaskNameInputActivity"
+            android:noHistory="true" />
+        <activity android:name=".View.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.LoginActivity" />
-        <activity android:name=".View.StudyActivity" />
-        <activity
-            android:name=".View.TaskNameInputActivity"
-            android:noHistory="true" />
-        <activity android:name=".View.HomeActivity"/>
-        <activity android:name=".View.MainActivity" />
+        <activity android:name=".View.MainActivity"/>
     </application>
 
 </manifest>
