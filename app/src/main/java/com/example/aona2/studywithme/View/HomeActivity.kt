@@ -1,32 +1,39 @@
 package com.example.aona2.studywithme.View
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.aona2.studywithme.Model.CurrentStudyInfo
+import com.example.aona2.studywithme.Model.Room
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     //ユーザー情報を保持しておく　他アクティビティから使用される
     companion object{
-        var users: MutableMap<String, User> = mutableMapOf<String, User>()
+        //Map<uid, User>
+        var users = mutableMapOf<String, User>()
     }
+    //Map<roomId, Room>
+    private var rooms = mutableMapOf<String, Room>()
 
     private lateinit var adapter: StudyingFriendListAdapter
-
-    private var currentStudyInfos: MutableList<CurrentStudyInfo> = mutableListOf<CurrentStudyInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +51,19 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         recyclerView.addItemDecoration(itemDecoration)
 
         //Firebaseの情報を取得し、recyclerViewに渡す
-        fetchCurrentStudyInfos()
+        //fetchUsers()が成功したらfetchRooms(),setUserIconを呼び出す
+        //こうしないとHomeActivityを表示したときにusersがnullでユーザー情報が表示されない可能性がある
         fetchUsers()
+
+        //1分ごとにRecyclerViewを更新する
+        val handler = Handler()
+        var runnable = Runnable {  }
+        runnable = Runnable {
+            adapter.notifyDataSetChanged()
+            handler.postDelayed(runnable, 60 * 1000)
+            Log.d("HomeActivity", "refresh by handler")
+        }
+        handler.post(runnable)
 
         //fabがクリックされたら一人で勉強を開始
         //何も付加情報なしでTaskNameInputActivityに遷移
@@ -63,7 +81,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.menu_logout -> {
+            R.id.menu_logout -> { //ログアウトメニュー
                 Firebase.auth.signOut()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -74,16 +92,18 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        Log.d("HomeActivity","on create options menu")
         menuInflater.inflate(R.menu.nav_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     //recyclerViewのアイテムがクリックされた場合呼び出される
-    //クリックされたユーザーの勉強情報を引数にとる
-    override fun onItemClicked(index: Int, currentStudyInfo: CurrentStudyInfo) {
+    //クリックされたユーザーのuidとルーム情報を付加する
+    override fun onItemClicked(index: Int, friendUid: String, friendRoom: Room) {
         val intent = Intent(this, TaskNameInputActivity::class.java)
         //intent先にユーザー情報を送る
-        intent.putExtra("STUDY_INFO", currentStudyInfo)
+        intent.putExtra("FRIEND_UID", friendUid)
+        intent.putExtra("FRIEND_ROOM", friendRoom)
         startActivity(intent)
     }
 
@@ -101,28 +121,31 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         }
     }
 
-    //Firebaseから現在の勉強情報を取得する
+    //Firebaseから部屋情報を取得する
     //自動で更新するように変更
-    private fun fetchCurrentStudyInfos(){
-        val currentStudyInfosRef = FirebaseDatabase.getInstance().getReference("/CurrentStudyInfos")
-        currentStudyInfosRef.addChildEventListener(object : ChildEventListener {
+    private fun fetchRooms(){
+        val roomsRef = FirebaseDatabase.getInstance().getReference("/rooms")
+        roomsRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
-                if (currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
-                adapter.setCurrentStudyInfos(currentStudyInfos)
+                Log.d("HomeActivity", "fetch rooms")
+                val room = snapshot.getValue(Room::class.java)
+                if (room != null) rooms[room.roomId] = room
+                adapter.setRooms(rooms)
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
-                if (currentStudyInfo != null) currentStudyInfos.add(currentStudyInfo)
-                adapter.setCurrentStudyInfos(currentStudyInfos)
+                Log.d("HomeActivity", "fetch rooms")
+                val room = snapshot.getValue(Room::class.java)
+                if (room != null) rooms[room.roomId] = room
+                adapter.setRooms(rooms)
             }
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
 
             }
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                val currentStudyInfo = snapshot.getValue(CurrentStudyInfo::class.java)
-                if (currentStudyInfo != null) currentStudyInfos.remove(currentStudyInfo)
-                adapter.setCurrentStudyInfos(currentStudyInfos)
+                Log.d("HomeActivity", "fetch rooms")
+                val room = snapshot.getValue(Room::class.java)
+                if (room != null) rooms.remove(room.roomId)
+                adapter.setRooms(rooms)
             }
             override fun onCancelled(error: DatabaseError) {
 
@@ -140,9 +163,23 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                     val user = it.getValue(User::class.java)
                     if(user != null) users[it.key!!] = user
                 }
+                setUserIcon()
+                fetchRooms()
             }
             override fun onCancelled(error: DatabaseError) {
             }
         })
+    }
+
+    private fun setUserIcon(){
+        val uid = Firebase.auth.currentUser?.uid ?: return
+        val userImageView = users[uid]?.userImageView ?: return
+        val actionBar = this.supportActionBar
+        val userIcon = CircleImageView(this)
+        Picasso.get().load(userImageView).into(userIcon)
+        userIcon.circleBackgroundColor = resources.getColor(android.R.color.white)
+        userIcon.borderWidth = 2
+        actionBar?.setCustomView(userIcon, ActionBar.LayoutParams(Gravity.RIGHT))
+        actionBar?.setDisplayShowCustomEnabled(true)
     }
 }

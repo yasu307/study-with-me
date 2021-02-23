@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private val pickPhotoRequestCode = 2
 
-    private var photoUri: Uri? = null
+    private var imageUri: Uri? = null
 
     companion object {
         //デバッグ時のコメント用
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "photo was selected")
             data?.data?.let {
                 //uploadImageToFirebase()にて使用するため変数に代入しておく
-                photoUri = it
+                imageUri = it
                 //選択した写真をViewに表示
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
                 select_photo_imageView_register.setImageBitmap(bitmap)
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         //emailとpasswordが空だと、ユーザー作成で落ちるので事前に判別
         //ついでにUsernameとアイコンもチェック
-        if (email.isEmpty() || password.isEmpty() || userName.isEmpty() || photoUri == null) {
+        if (email.isEmpty() || password.isEmpty() || userName.isEmpty() || imageUri == null) {
             Toast.makeText(this, "入力内容を埋めてください", Toast.LENGTH_SHORT).show()
             return
         }
@@ -112,8 +112,8 @@ class MainActivity : AppCompatActivity() {
 
         val storageRef = Firebase.storage.reference
         val uploadImageRef = storageRef.child(filename)
-        if(photoUri == null) return
-        uploadImageRef.putFile(photoUri!!)
+        if(imageUri == null) return
+        uploadImageRef.putFile(imageUri!!)
                 .addOnSuccessListener {
                     Log.d(TAG, "Image upload is success: ${it.metadata?.path}")
                     //アップロードしたファイルをダウンロードするUriを渡す
@@ -136,8 +136,7 @@ class MainActivity : AppCompatActivity() {
         val database = Firebase.database
         val ref = database.getReference("users/$uid")
 
-        val user = User(uid
-                ?: "", username_edittext_register.text.toString(), userImageView)
+        val user = User(uid ?: "", username_edittext_register.text.toString(), userImageView)
         ref.setValue(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "save user to Firebase is success")

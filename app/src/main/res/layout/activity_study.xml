@@ -1,17 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout_studyActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/defaultBackground"
     android:orientation="vertical"
-    tools:context=".View.StudyActivity">
+    tools:context=".View.StudyActivity" >
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/question_fab_studyActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="questionFab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ask_question_icon" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout_studyActivity"
+        android:id="@+id/showRemainTime_constraint_studyActivity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/remain_time_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="00:00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/black"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/remain_time_progressBar"
@@ -21,44 +51,107 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
             android:progressDrawable="@drawable/thick_progress"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/remain_time_textView" />
 
-        <TextView
-            android:id="@+id/remain_time_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="00:00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="50sp"
-            android:textStyle="bold"
+        <Button
+            android:id="@+id/nextMode_btn_studyActivity"
+            android:layout_width="15dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/remain_time_textView" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
-            android:text="ルームにいる人"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/remain_time_progressBar" />
+        <ImageView
+            android:id="@+id/studyStatus_imageView_studyActivity"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="24dp"
+            android:contentDescription="StudyStatus"
+            app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView"
+            app:layout_constraintEnd_toStartOf="@+id/remain_time_textView"
+            app:layout_constraintTop_toTopOf="@+id/remain_time_textView"
+            app:srcCompat="@drawable/study_status" />
 
+        <ImageView
+            android:id="@+id/breaktimeStatus_imageView_studyActivity"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="24dp"
+            android:contentDescription="breakTimeStatus"
+            app:layout_constraintBottom_toBottomOf="@+id/remain_time_textView"
+            app:layout_constraintEnd_toStartOf="@+id/remain_time_textView"
+            app:layout_constraintTop_toTopOf="@+id/remain_time_textView"
+            app:srcCompat="@drawable/breaktime_status" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/in_room_friend_recyclerview"
+        android:id="@+id/inRoomFriend_recyclerView_studyActivity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showRemainTime_constraint_studyActivity" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/simpleRoomFriend_linear_studyActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showRemainTime_constraint_studyActivity"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_recyclerView_studyActivity"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/design_default_color_secondary"
+        app:layout_constraintBottom_toTopOf="@+id/messageInput_constraint_studyActivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/simpleRoomFriend_linear_studyActivity" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/messageInput_constraint_studyActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/messageInput_editText_studyActivity"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="メッセージを入力"
+            android:background="@color/white"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/send_btn_studyActivity"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/send_btn_studyActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="送信"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
