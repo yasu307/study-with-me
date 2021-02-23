@@ -1,19 +1,29 @@
 package com.example.aona2.studywithme.new
 
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.aona2.studywithme.Model.User
+import com.example.aona2.studywithme.View.HomeActivity
+import com.example.aona2.studywithme.View.MainActivity
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks.await
+import com.google.firebase.FirebaseCommonRegistrar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
@@ -46,17 +56,6 @@ class UserRepository {
                 Log.d("UserRepository","on data cancelled")
             }
         })
-    }
-
-    suspend fun login(email: String, password: String): Boolean{
-        var isSucceeded = false
-        try{
-            Firebase.auth.signInWithEmailAndPassword(email,password).await()
-            isSucceeded = true
-        }catch (e: FirebaseAuthException){
-            return false
-        }
-        return isSucceeded
     }
 
     suspend fun register(email: String, password: String, userName: String, photoUri: Uri) :Boolean{

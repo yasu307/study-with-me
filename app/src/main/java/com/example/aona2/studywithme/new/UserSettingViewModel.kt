@@ -35,22 +35,8 @@ class UserSettingViewModel (application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun login(email: String, password: String) = viewModelScope.launch(Dispatchers.IO){
-        val isSucceeded = repo.login(email, password)
-        if(isSucceeded){
-            Log.d("UserSettingViewModel", "login is succeeded")
-            _message.emit(Message.LoginSucceeded)
-        }
-        else{
-            Log.d("UserSettingViewModel", "login is failed")
-            _message.emit(Message.LoginFailed)
-        }
-    }
-
     sealed class Message{
         object Succeeded: Message()
         object Failed: Message()
-        object LoginSucceeded: Message()
-        object LoginFailed: Message()
     }
 }

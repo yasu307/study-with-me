@@ -9,10 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyWithMe">
-        <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".UserSettingActivity">
+        <activity android:name=".NewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +21,8 @@
         <activity
             android:name=".View.TaskNameInputActivity"
             android:noHistory="true" />
-        <activity android:name=".View.HomeActivity" />
-        <activity android:name=".View.RegisterActivity">
+        <activity android:name=".View.HomeActivity"/>
+        <activity android:name=".View.MainActivity">
 
         </activity>
     </application>

@@ -5,14 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".UserSettingActivity">
+    tools:context=".NewActivity">
 
     <fragment
-        android:id="@+id/nav_host_fragment"
-        android:layout_height="match_parent"
+        android:id="@+id/register_fragment"
+        android:name="com.example.aona2.studywithme.new.RegisterFragment"
         android:layout_width="match_parent"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        app:navGraph="@navigation/user_setting_nav_graph"
-        app:defaultNavHost="true" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>
