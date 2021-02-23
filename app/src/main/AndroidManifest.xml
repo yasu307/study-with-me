@@ -22,9 +22,7 @@
             android:name=".View.TaskNameInputActivity"
             android:noHistory="true" />
         <activity android:name=".View.HomeActivity"/>
-        <activity android:name=".View.MainActivity">
-
-        </activity>
+        <activity android:name=".View.MainActivity" />
     </application>
 
 </manifest>
