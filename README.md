@@ -5,7 +5,7 @@
 授業にてコンセプト考案から実装まで自分で作成しました。<br>
 
 詳しいコンセプトやアプリの画面などは以下のスライドで確認してください。<br>
-https://www.slideshare.net/secret/hTv1ZtdwDRlMJS
+https://www.slideshare.net/secret/1fG8OyzCsieW9l
 
 # Note
 改善したほうがいい点や正常に動作しない場合などありましたらお気軽にご連絡ください。<br>
