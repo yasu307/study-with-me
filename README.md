@@ -5,7 +5,7 @@
 友達と同じタイミングで勉強や休憩をし、休憩中のみ雑談をするというアイデアを考え、それを可能にするAndroidアプリを作成しました。<br>
 
 詳しいコンセプトやアプリの画面などは以下のスライドで確認してください。<br>
-https://www.slideshare.net/secret/1fG8OyzCsieW9l
+https://www.slideshare.net/secret/dLQ4L8KoIiWDQH
 
 # Note
 改善したほうがいい点や正常に動作しない場合などありましたらお気軽にご連絡ください。<br>
@@ -17,4 +17,4 @@ https://icons8.jp/<br>
 # Author
 * 安岡　裕助
 * 電気通信大学
-* yusuke307.ac@gmail.com
+* y2030113@edu.cc.uec.ac.jp
