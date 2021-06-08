@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +55,9 @@ class StudyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
 
+        //放置しても画面が消えないように
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         room = intent.getParcelableExtra<Room>("ROOM_KEY")
         Log.d("StudyActivity", "room id is ${room?.roomId}")
 
@@ -100,11 +104,11 @@ class StudyActivity : AppCompatActivity() {
             changeViewFromStatus()
         }
 
-        //質問ボタンが押されたらダミーの質問アクティビティへ遷移
-        question_fab_studyActivity.setOnClickListener{
-            val intent = Intent(this, DummyQuestionActivity::class.java)
-            startActivity(intent)
-        }
+//        //質問ボタンが押されたらダミーの質問アクティビティへ遷移
+//        question_fab_studyActivity.setOnClickListener{
+//            val intent = Intent(this, DummyQuestionActivity::class.java)
+//            startActivity(intent)
+//        }
     }
 
     override fun onResume() {
@@ -190,7 +194,7 @@ class StudyActivity : AppCompatActivity() {
             //勉強中のViewを見えるように
             inRoomFriend_recyclerView_studyActivity.visibility = View.VISIBLE
             studyStatus_imageView_studyActivity.visibility = View.VISIBLE
-            question_fab_studyActivity.visibility = View.VISIBLE
+            question_fab_studyActivity.visibility = View.GONE
             //休憩中のViewを見えないように
             simpleRoomFriend_linear_studyActivity.visibility = View.GONE
             chat_recyclerView_studyActivity.visibility = View.GONE
