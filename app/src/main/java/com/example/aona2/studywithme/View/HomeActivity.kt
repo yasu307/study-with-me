@@ -14,10 +14,13 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aona2.studywithme.Model.Room
+import com.example.aona2.studywithme.Model.StudyInfo
 import com.example.aona2.studywithme.Model.User
 import com.example.aona2.studywithme.R
+import com.example.aona2.studywithme.TimeManage.CalcStudyTime
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
@@ -54,6 +57,9 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         //fetchUsers()が成功したらfetchRooms(),setUserIconを呼び出す
         //こうしないとHomeActivityを表示したときにusersがnullでユーザー情報が表示されない可能性がある
         fetchUsers()
+
+        //勉強ログを表示する
+        fetchMyStudyInfo()
 
         //1分ごとにRecyclerViewを更新する
         val handler = Handler()
@@ -181,5 +187,24 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         userIcon.borderWidth = 2
         actionBar?.setCustomView(userIcon, ActionBar.LayoutParams(Gravity.RIGHT))
         actionBar?.setDisplayShowCustomEnabled(true)
+    }
+
+    private fun fetchMyStudyInfo(): MutableList<StudyInfo>{
+        Log.d("HomeActivity", "fetch my study info")
+        var studyInfoList = mutableListOf<StudyInfo>()
+        val myUid = Firebase.auth.currentUser?.uid ?: return studyInfoList
+        val studyInfoLogRef = Firebase.database.getReference("studyInfoLog/$myUid")
+        studyInfoLogRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach {
+                    val studyInfo = it.getValue(StudyInfo::class.java)
+                    if(studyInfo != null) studyInfoList.add(studyInfo)
+                }
+                CalcStudyTime(studyInfoList).logStudyInfoList()
+            }
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+        return studyInfoList
     }
 }
