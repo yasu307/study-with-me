@@ -29,6 +29,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class StudyActivity : AppCompatActivity() {
@@ -50,6 +51,8 @@ class StudyActivity : AppCompatActivity() {
 
     //ステータスを無理やり切り替えるためにフィールドにした
     private lateinit var remainTime: Pair<Long, Boolean>
+
+    val currentUser = Firebase.auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -259,20 +262,20 @@ class StudyActivity : AppCompatActivity() {
         changeViewFromStatus()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("StudyActivity", "onDestroy")
-        //一応タイマーをキャンセルしておく
-        if (myCountDownTimer != null) myCountDownTimer?.cancel()
-
-        //Firebase上の退出処理
-        val currentUser = Firebase.auth.currentUser
-
+    private fun saveMyStudyInfoToStudyInfoLog(){
         //自分の勉強情報を保存する
         val myStudyInfoRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos/${currentUser?.uid}")
         val myStudyInfo = studyInfoList.find { it.uid == currentUser?.uid }
         Log.d("StudyActivity", "myStudyInfo is ${myStudyInfo.toString()}")
+        myStudyInfo?.studyFinishAt = Calendar.getInstance().timeInMillis
+        val studyInfoLogRef = Firebase.database.getReference("studyInfoLog/${currentUser?.uid}").push()
+        studyInfoLogRef.setValue(myStudyInfo).addOnSuccessListener {
+            Log.d("StudyActivity", "save my study info to study info log is succeeded")
+            deleteMyStudyInfoFromRoom()
+        }
+    }
 
+    private fun deleteMyStudyInfoFromRoom(){
         //もしRoomに自分しかいなかったらRoomを削除
         if (studyInfoList.size == 1) {
             val roomRef = Firebase.database.getReference("rooms/${room?.roomId}")
@@ -289,6 +292,18 @@ class StudyActivity : AppCompatActivity() {
                 Log.d("StudyActivity", "delete my study info is failure")
             }
         }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("StudyActivity", "onDestroy")
+        //一応タイマーをキャンセルしておく
+        if (myCountDownTimer != null) myCountDownTimer?.cancel()
+
+        //Firebase上の退出処理
+        //saveMyStudyInfoToStudyInfoLog() ののち deleteMyStudyInfoFromRoom()
+        saveMyStudyInfoToStudyInfoLog()
     }
 
     //dpをpxに置換

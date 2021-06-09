@@ -60,7 +60,7 @@ class TaskNameInputActivity : AppCompatActivity() {
         //自分の勉強情報を作成する
         val nowMillis = Calendar.getInstance().timeInMillis
         val taskName = task_name_edit_text.text.toString()
-        val studyInfo = StudyInfo(myUid!!, taskName, nowMillis, roomRef.key!!, nowMillis)
+        val studyInfo = StudyInfo(myUid!!, taskName, nowMillis, roomRef.key!!, nowMillis, -1)
 
         //ルーム情報を保存
         val room = Room(roomRef.key!!, nowMillis, mapOf(myUid to studyInfo))
@@ -82,7 +82,7 @@ class TaskNameInputActivity : AppCompatActivity() {
         val nowMillis = Calendar.getInstance().timeInMillis
         val taskName = task_name_edit_text.text.toString()
 
-        val studyInfo = StudyInfo(myUid!!, taskName, nowMillis, friendRoom.roomId, friendRoom.roomStartAt)
+        val studyInfo = StudyInfo(myUid!!, taskName, nowMillis, friendRoom.roomId, friendRoom.roomStartAt, -1)
         ref.setValue(studyInfo).addOnSuccessListener {
             Log.d("TaskNameInputActivity", "save user to friend room is succeeded")
             moveToRoom(friendRoom)

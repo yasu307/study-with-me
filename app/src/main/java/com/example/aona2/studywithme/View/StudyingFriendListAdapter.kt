@@ -117,7 +117,7 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
         var roomNum = 1
         rooms.forEach { roomMap ->
             //roomの切り替わりを示すために特殊なStudyInfoをリストに格納する
-            val roomStudyInfo = StudyInfo("room","room",roomNum.toLong(), "room", roomNum.toLong())
+            val roomStudyInfo = StudyInfo("room","room",roomNum.toLong(), "room", roomNum.toLong(), -1)
             //次のRoom番号のために1を足す
             roomNum++
             tmpStudyInfos.add(roomStudyInfo)
