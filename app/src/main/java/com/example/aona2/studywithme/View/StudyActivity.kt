@@ -268,6 +268,11 @@ class StudyActivity : AppCompatActivity() {
         //Firebase上の退出処理
         val currentUser = Firebase.auth.currentUser
 
+        //自分の勉強情報を保存する
+        val myStudyInfoRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos/${currentUser?.uid}")
+        val myStudyInfo = studyInfoList.find { it.uid == currentUser?.uid }
+        Log.d("StudyActivity", "myStudyInfo is ${myStudyInfo.toString()}")
+
         //もしRoomに自分しかいなかったらRoomを削除
         if (studyInfoList.size == 1) {
             val roomRef = Firebase.database.getReference("rooms/${room?.roomId}")
@@ -277,8 +282,8 @@ class StudyActivity : AppCompatActivity() {
                 Log.d("StudyActivity", "delete room is failure")
             }
         } else { //そうじゃなかったらRoomから自分のStudyInfoのみを削除
-            val inRoomUsersRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos/${currentUser?.uid}")
-            inRoomUsersRef.removeValue().addOnSuccessListener {
+            val myStudyInfoRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos/${currentUser?.uid}")
+            myStudyInfoRef.removeValue().addOnSuccessListener {
                 Log.d("StudyActivity", "delete my study info is success")
             }.addOnFailureListener {
                 Log.d("StudyActivity", "delete my study info is failure")

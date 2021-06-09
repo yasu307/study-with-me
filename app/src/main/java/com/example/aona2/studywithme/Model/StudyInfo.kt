@@ -10,4 +10,8 @@ data class StudyInfo(val uid: String,
                      val roomId: String,
                      val roomStartAt: Long) : Parcelable {
     constructor() : this("","",-1, "", -1)
+
+    override fun toString(): String {
+        return "uid is $uid, task name is $taskName, study start at $studyStartAt, room id is $roomId, room start at $roomStartAt"
+    }
 }

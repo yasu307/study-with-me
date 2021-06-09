@@ -20,17 +20,18 @@ class CalcRemainTime(private val startRoomAtMillis: Long)  {
     //現在実行中のモードの残り時間を計算　返り値　Pair<残り時間（ミリ秒）,勉強中か？>
     //もっと簡素にできないか？
     fun calcRemainTime() : Pair<Long, Boolean>{
+        Log.d("CalcRemainTime", "calcRemainTime()")
         //現在の時間
         val currentTimeMillis = Calendar.getInstance().timeInMillis
-        Log.d("StudyActivity", "current time is ${simpleDateFormat.format(currentTimeMillis)} ")
+//        Log.d("StudyActivity", "current time is ${simpleDateFormat.format(currentTimeMillis)} ")
 
         //経過時間
         val elapsedTimeMillis = currentTimeMillis - startRoomAtMillis
-        Log.d("StudyActivity", "elapsed time millis is $elapsedTimeMillis")
+//        Log.d("StudyActivity", "elapsed time millis is $elapsedTimeMillis")
 
         //残り時間
         val remainTimeMillis = ((oneRoopMin * 60 * 1000) - (elapsedTimeMillis % (oneRoopMin * 60 * 1000)))
-        Log.d("StudyActivity", "remain time is $remainTimeMillis")
+//        Log.d("StudyActivity", "remain time is $remainTimeMillis")
 
         //残り時間が5分以上なら勉強中、そうでないなら休憩中
         if (remainTimeMillis >= breaktimeMin * 60 * 1000) return Pair(remainTimeMillis - breaktimeMin * 60 * 1000, true)
