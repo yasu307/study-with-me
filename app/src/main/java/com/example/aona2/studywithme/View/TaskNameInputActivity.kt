@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_task_name_input.*
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -58,9 +59,10 @@ class TaskNameInputActivity : AppCompatActivity() {
         if(roomRef.key == null) return
 
         //自分の勉強情報を作成する
+        val now = LocalDateTime.now()
         val nowMillis = Calendar.getInstance().timeInMillis
         val taskName = task_name_edit_text.text.toString()
-        val studyInfo = StudyInfo(myUid!!, taskName, nowMillis, roomRef.key!!, nowMillis, -1)
+        val studyInfo = StudyInfo(myUid!!, taskName, now.toString(), roomRef.key!!, nowMillis, "")
 
         //ルーム情報を保存
         val room = Room(roomRef.key!!, nowMillis, mapOf(myUid to studyInfo))
@@ -79,10 +81,11 @@ class TaskNameInputActivity : AppCompatActivity() {
     private fun saveUserToFriendRoom(friendRoom: Room){
         val ref = Firebase.database.getReference("rooms/${friendRoom.roomId}/studyInfos/$myUid")
 
+        val now = LocalDateTime.now()
         val nowMillis = Calendar.getInstance().timeInMillis
         val taskName = task_name_edit_text.text.toString()
 
-        val studyInfo = StudyInfo(myUid!!, taskName, nowMillis, friendRoom.roomId, friendRoom.roomStartAt, -1)
+        val studyInfo = StudyInfo(myUid!!, taskName, now.toString(), friendRoom.roomId, friendRoom.roomStartAt, "")
         ref.setValue(studyInfo).addOnSuccessListener {
             Log.d("TaskNameInputActivity", "save user to friend room is succeeded")
             moveToRoom(friendRoom)

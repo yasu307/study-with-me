@@ -9,6 +9,6 @@ data class CurrentStudyInfo(val uid: String,
                        val roomId: String,
                        val taskName: String,
                        val roomStartAt: Long,
-                       val studyStartAt: Long) : Parcelable {
-    constructor() : this("","","",0,0)
+                       val studyStartAt: String) : Parcelable {
+    constructor() : this("","","",0,"")
 }

@@ -29,6 +29,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_study.*
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -267,7 +268,7 @@ class StudyActivity : AppCompatActivity() {
         val myStudyInfoRef = Firebase.database.getReference("rooms/${room?.roomId}/studyInfos/${currentUser?.uid}")
         val myStudyInfo = studyInfoList.find { it.uid == currentUser?.uid }
         Log.d("StudyActivity", "myStudyInfo is ${myStudyInfo.toString()}")
-        myStudyInfo?.studyFinishAt = Calendar.getInstance().timeInMillis
+        myStudyInfo?.studyFinishAt = LocalDateTime.now().toString()
         val studyInfoLogRef = Firebase.database.getReference("studyInfoLog/${currentUser?.uid}").push()
         studyInfoLogRef.setValue(myStudyInfo).addOnSuccessListener {
             Log.d("StudyActivity", "save my study info to study info log is succeeded")

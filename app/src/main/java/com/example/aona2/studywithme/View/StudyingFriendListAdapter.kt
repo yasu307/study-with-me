@@ -73,7 +73,7 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
                 val holder = holder as RoomViewHolder
 
                 val studyInfo = allStudyInfos[position]
-                holder.roomText.text = "ルーム${studyInfo.roomStartAt}"
+                holder.roomText.text = "ルーム${studyInfo.roomId}"
             }
             VIEW_TYPE_STUDY_INFO ->{//勉強している友達を表示する行
                 //ViewHolderをキャスト
@@ -117,7 +117,7 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
         var roomNum = 1
         rooms.forEach { roomMap ->
             //roomの切り替わりを示すために特殊なStudyInfoをリストに格納する
-            val roomStudyInfo = StudyInfo("room","room",roomNum.toLong(), "room", roomNum.toLong(), -1)
+            val roomStudyInfo = StudyInfo("room","room", "", "" , roomNum.toLong(), "")
             //次のRoom番号のために1を足す
             roomNum++
             tmpStudyInfos.add(roomStudyInfo)
