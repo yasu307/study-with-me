@@ -204,8 +204,9 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                         set(Calendar.MILLISECOND, 0)}
         Log.d("HomeActivity", weekago.time.toString())
 
-        //ToDo 一週間以内の勉強情報のみ取得する
-        studyInfoLogRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        val studyInfoQuery = studyInfoLogRef.orderByChild("studyStartAt").startAt(weekago.timeInMillis.toDouble())
+
+        studyInfoQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
                     val studyInfo = it.getValue(StudyInfo::class.java)
