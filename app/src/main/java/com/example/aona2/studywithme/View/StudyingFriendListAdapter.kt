@@ -110,7 +110,7 @@ class StudyingFriendListAdapter internal constructor(val context: Context, liste
     //フィールドに現在の勉強情報を保持　変更があれば自動で更新する(まだされない)
     //HomeActivityから呼ばれる
     internal fun setRooms(rooms: MutableMap<String, Room>){
-        Log.d("StudyingFriendListAdapter", "set rooms !!!!!!!!!!!!!!!!!!!!!")
+        Log.d("StudyingFriendListAdapter", "set rooms")
         this.rooms = rooms
         val tmpStudyInfos = mutableListOf<StudyInfo>()
         //Room番号の初期化

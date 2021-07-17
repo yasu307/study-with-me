@@ -13,6 +13,6 @@ data class StudyInfo(val uid: String,
     constructor() : this("", "", "", "", -1, "")
 
     override fun toString(): String {
-        return "uid is $uid, task name is $taskName, study start at $studyStartAt, room id is $roomId, room start at $roomStartAt"
+        return "uid is $uid, task name is $taskName, study start at $studyStartAt, room id is $roomId, room start at $roomStartAt, study finish at $studyFinishAt"
     }
 }

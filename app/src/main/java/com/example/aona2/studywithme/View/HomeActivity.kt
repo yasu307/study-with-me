@@ -195,18 +195,6 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         var studyInfoList = mutableListOf<StudyInfo>()
         val myUid = Firebase.auth.currentUser?.uid ?: return studyInfoList
         val studyInfoLogRef = Firebase.database.getReference("studyInfoLog/$myUid")
-        //一週間前のカレンダー
-        val now = LocalDateTime.now()
-
-//        val weekago = Calendar.getInstance()
-//        weekago.apply{add(Calendar.DAY_OF_MONTH, -6)
-//                        set(Calendar.HOUR_OF_DAY, 0)
-//                        set(Calendar.MINUTE, 0)
-//                        set(Calendar.SECOND, 0)
-//                        set(Calendar.MILLISECOND, 0)}
-//        Log.d("HomeActivity", weekago.time.toString())
-//
-//        val studyInfoQuery = studyInfoLogRef.orderByChild("studyStartAt").startAt(weekago.timeInMillis.toDouble())
 
         studyInfoLogRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -214,7 +202,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                     val studyInfo = it.getValue(StudyInfo::class.java)
                     if(studyInfo != null) studyInfoList.add(studyInfo)
                 }
-                CalcStudyTime(studyInfoList).logStudyInfoList()
+                CalcStudyTime(studyInfoList).setWeeklyStudyTime()
             }
             override fun onCancelled(error: DatabaseError) {
             }
