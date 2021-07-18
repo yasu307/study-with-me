@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyWithMe">
-        <activity android:name=".View.DummyQuestionActivity"></activity>
+        <activity android:name=".View.StudyLogActivity"></activity>
+        <activity android:name=".View.DummyQuestionActivity" />
         <activity android:name=".View.LoginActivity" />
         <activity android:name=".View.StudyActivity" />
         <activity

@@ -78,6 +78,10 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
             val intent = Intent(this, TaskNameInputActivity::class.java)
             startActivity(intent)
         }
+        log_button_home_activity.setOnClickListener {
+            val intent = Intent(this, StudyLogActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     //resumeのときrecyclerViewを更新
