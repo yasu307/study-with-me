@@ -60,7 +60,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
         fetchUsers()
 
         //勉強ログを表示する
-        fetchMyStudyInfo()
+//        fetchMyStudyInfo()
 
         //1分ごとにRecyclerViewを更新する
         val handler = Handler()
@@ -206,7 +206,7 @@ class HomeActivity : AppCompatActivity(), StudyingFriendListAdapter.Listener {
                     val studyInfo = it.getValue(StudyInfo::class.java)
                     if(studyInfo != null) studyInfoList.add(studyInfo)
                 }
-                CalcStudyTime(studyInfoList).setWeeklyStudyTime()
+                CalcStudyTime().setWeeklyStudyTime()
             }
             override fun onCancelled(error: DatabaseError) {
             }

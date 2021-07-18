@@ -6,9 +6,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class CalcStudyTime(val studyInfoList: MutableList<StudyInfo>) {
+class CalcStudyTime() {
     //一週間の勉強時間 (...,一昨日の勉強時間,昨日の勉強時間,今日の勉強時間)
     var weeklyStudyMinutes = mutableListOf<Long>(0,0,0,0,0,0,0)
+    var studyInfoList = mutableListOf<StudyInfo>()
+    var weeklyStudyHour = listOf<Float>()
 
     companion object {
         //デバッグ時のコメント用
@@ -39,6 +41,7 @@ class CalcStudyTime(val studyInfoList: MutableList<StudyInfo>) {
             weeklyStudyMinutes[period] += ChronoUnit.MINUTES.between(startTime, finishTime)
         }
         logWeeklyStudyTime()
+        weeklyStudyHour = weeklyStudyMinutes.map { it.toFloat() / 60 }
     }
 
     fun logWeeklyStudyTime(){
